@@ -22,6 +22,7 @@ public class CardController {
 
     @PostMapping
     public ResponseEntity<Card> createCard(@PathVariable("boardId") Long boardId, @RequestBody Card card) {
+        card.setBoardId(boardId); // Assuming you have setter for boardId in Card model
         Card newCard = cardService.createCard(boardId, card);
         return new ResponseEntity<>(newCard, HttpStatus.CREATED);
     }
@@ -45,8 +46,9 @@ public class CardController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCard(@PathVariable("boardId") Long boardId, @PathVariable("id") Long id) {
-        cardService.deleteCard(boardId, id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> deleteCard(@PathVariable("boardId") Long boardId, @PathVariable("id") Long id) {
+        String response = cardService.deleteCard(boardId, id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
+
