@@ -1,6 +1,8 @@
 package com.example.Management.Board.API.Controller;
 
+import com.example.Management.Board.API.Model.Board;
 import com.example.Management.Board.API.Model.Card;
+import com.example.Management.Board.API.Service.BoardService;
 import com.example.Management.Board.API.Service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,16 +16,22 @@ import java.util.List;
 public class CardController {
 
     private final CardService cardService;
+    private final BoardService boardService;
 
     @Autowired
-    public CardController(CardService cardService) {
+    public CardController(CardService cardService, BoardService boardService) {
         this.cardService = cardService;
+        this.boardService = boardService;
     }
 
     @PostMapping
     public ResponseEntity<Card> createCard(@PathVariable("boardId") Long boardId, @RequestBody Card card) {
-        card.setBoardId(boardId); // Assuming you have setter for boardId in Card model
-        Card newCard = cardService.createCard(boardId, card);
+        Board board = boardService.getBoardById(boardId);
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        card.setBoard(board);
+        Card newCard = cardService.createCard(card);
         return new ResponseEntity<>(newCard, HttpStatus.CREATED);
     }
 
@@ -51,4 +59,3 @@ public class CardController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
-
