@@ -17,7 +17,7 @@ public class CardService {
         this.cardRepository = cardRepository;
     }
 
-    public Card createCard(Long boardId, Card card) {
+    public Card createCard(Card card) {
         return cardRepository.save(card);
     }
 
