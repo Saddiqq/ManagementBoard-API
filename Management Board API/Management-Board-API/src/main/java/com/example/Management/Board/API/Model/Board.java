@@ -5,50 +5,39 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-public class Board {
+@Table(name = "boards")
+public class Board extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String name;
+    @Column(nullable = false)
+    private String title;
 
-    @ElementCollection
-    private Map<Integer, String> columns;
+    @Column(nullable = false)
+    private Integer columns;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Card> cards;
 
-    public Board() {
-        // Default constructor
-    }
+    // Default constructor
+    public Board() {}
 
-    public Board(String name, Map<Integer, String> columns) {
-        this.name = name;
+    public Board(String title, Integer columns) {
+        this.title = title;
         this.columns = columns;
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Map<Integer, String> getColumns() {
+    public Integer getColumns() {
         return columns;
     }
 
-    public void setColumns(Map<Integer, String> columns) {
+    public void setColumns(Integer columns) {
         this.columns = columns;
     }
 
