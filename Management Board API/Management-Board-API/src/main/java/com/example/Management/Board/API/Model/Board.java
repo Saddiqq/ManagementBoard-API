@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "boards")
-public class BoardModel extends BaseEntity {
+public class Board extends BaseEntity {
 
     @Column(name = "name")
     private String name;
