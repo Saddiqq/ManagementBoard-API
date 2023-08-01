@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Date;
+
 @Service
 public class BoardService {
 
@@ -32,7 +33,7 @@ public class BoardService {
     public Board updateBoard(Long id, Board boardDetails) {
         Board board = boardRepository.findById(id).orElse(null);
         if (board != null) {
-            board.setName(boardDetails.getName());
+            board.setTitle(boardDetails.getTitle()); // Updated here
             board.setColumns(boardDetails.getColumns());
             return boardRepository.save(board);
         }
