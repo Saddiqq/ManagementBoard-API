@@ -33,13 +33,17 @@ public class BoardService {
     public Board updateBoard(Long id, Board boardDetails) {
         Board board = boardRepository.findById(id).orElse(null);
         if (board != null) {
-            board.setTitle(boardDetails.getTitle()); // Updated here
-            board.setColumns(boardDetails.getColumns());
+            board.setTitle(boardDetails.getTitle());
+
+            // Only set the columns field if it's not null
+            if (boardDetails.getColumns() != null) {
+                board.setColumns(boardDetails.getColumns());
+            }
+
             return boardRepository.save(board);
         }
         return null;
     }
-
     public String deleteBoard(Long id) {
         boardRepository.deleteById(id);
         return "Board with ID " + id + " has been deleted successfully.";

@@ -2,7 +2,6 @@ package com.example.Management.Board.API.Model;
 
 import jakarta.persistence.*;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "boards")
@@ -12,7 +11,7 @@ public class Board extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private Integer columns;
+    private Integer columns = 0;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Card> cards;
@@ -38,10 +37,12 @@ public class Board extends BaseEntity {
     }
 
     public void setColumns(Integer columns) {
-        this.columns = columns;
+        if(columns != null) {
+            this.columns = columns;
+        }
     }
 
-    public List<Card> getCards() {
+    public List<Card> cards() {
         return cards;
     }
 
