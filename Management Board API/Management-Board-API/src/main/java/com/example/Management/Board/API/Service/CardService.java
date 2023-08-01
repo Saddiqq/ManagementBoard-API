@@ -1,12 +1,13 @@
 package com.example.Management.Board.API.Service;
 
 import com.example.Management.Board.API.Model.Card;
-import com.example.Management.Board.API.Model.Board;
 import com.example.Management.Board.API.Repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CardService {
@@ -18,36 +19,27 @@ public class CardService {
         this.cardRepository = cardRepository;
     }
 
-    public Card createCard(Board board, Card card) {
-        card.setBoard(board);
+    public Card addCard(Card card) {
         return cardRepository.save(card);
     }
 
-    public List<Card> getAllCards(Board board) {
-        return cardRepository.findByBoard(board);
+    public List<Card> findAllCards() {
+        return cardRepository.findAll();
     }
 
-    public Card getCardById(Board board, Long cardId) {
-        return cardRepository.findByIdAndBoard(cardId, board).orElse(null);
+    public Card updateCard(Card card) {
+        return cardRepository.save(card);
     }
 
-    public Card updateCard(Board board, Long cardId, Card cardDetails) {
-        Card card = cardRepository.findByIdAndBoard(cardId, board).orElse(null);
-        if (card != null) {
-            card.setTitle(cardDetails.getTitle());
-            card.setDescription(cardDetails.getDescription());
-            card.setSection(cardDetails.getSection());
-            return cardRepository.save(card);
+    public Card findCardById(Long id) {
+        return cardRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Card with id " + id + " not found"));
+    }
+
+    public void deleteCard(Long id) {
+        if (!cardRepository.existsById(id)) {
+            throw new NoSuchElementException("Card with id " + id + " not found");
         }
-        return null;
-    }
-
-    public String deleteCard(Board board, Long cardId) {
-        Card card = cardRepository.findByIdAndBoard(cardId, board).orElse(null);
-        if (card != null) {
-            cardRepository.delete(card);
-            return "Card with ID " + cardId + " has been deleted successfully from board " + board.getId() + ".";
-        }
-        return null;
+        cardRepository.deleteById(id);
     }
 }
