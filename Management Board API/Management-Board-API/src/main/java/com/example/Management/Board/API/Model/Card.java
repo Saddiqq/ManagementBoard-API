@@ -3,37 +3,25 @@ package com.example.Management.Board.API.Model;
 import jakarta.persistence.*;
 
 @Entity
-public class Card {
+@Table(name = "cards")
+public class Card extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(nullable = false)
     private String title;
-    private String description;
+
+    @Column(nullable = false)
     private Integer section;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="board_id")
+    @ManyToOne
     private Board board;
 
-    public Card() {
-        // Default constructor
-    }
+    // Default constructor
+    public Card() {}
 
-    public Card(String title, String description, Integer section, Board board) {
+    public Card(String title, Integer section, Board board) {
         this.title = title;
-        this.description = description;
         this.section = section;
         this.board = board;
-    }
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -42,14 +30,6 @@ public class Card {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Integer getSection() {
