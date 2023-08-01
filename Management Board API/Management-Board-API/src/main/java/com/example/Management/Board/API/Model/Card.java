@@ -8,6 +8,7 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private Long boardId;
     private String title;
     private String description;
     private Integer section;
@@ -33,6 +34,14 @@ public class Card {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getBoardId() {
+        return boardId;
+    }
+
+    public void setBoardId(Long boardId) {
+        this.boardId = boardId;
     }
 
     public String getTitle() {
