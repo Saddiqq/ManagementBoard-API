@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Date;
 @Service
 public class BoardService {
 
@@ -18,26 +18,29 @@ public class BoardService {
     }
 
     public Board createBoard(Board board) {
-        // Your implementation goes here
-        return null;
+        return boardRepository.save(board);
     }
 
     public List<Board> getAllBoards() {
-        // Your implementation goes here
-        return null;
+        return boardRepository.findAll();
     }
 
     public Board getBoardById(Long id) {
-        // Your implementation goes here
+        return boardRepository.findById(id).orElse(null);
+    }
+
+    public Board updateBoard(Long id, Board boardDetails) {
+        Board board = boardRepository.findById(id).orElse(null);
+        if (board != null) {
+            board.setName(boardDetails.getName());
+            board.setColumns(boardDetails.getColumns());
+            return boardRepository.save(board);
+        }
         return null;
     }
 
-    public Board updateBoard(Long id, Board board) {
-        // Your implementation goes here
-        return null;
-    }
-
-    public void deleteBoard(Long id) {
-        // Your implementation goes here
+    public String deleteBoard(Long id) {
+        boardRepository.deleteById(id);
+        return "Board with ID " + id + " has been deleted successfully.";
     }
 }
