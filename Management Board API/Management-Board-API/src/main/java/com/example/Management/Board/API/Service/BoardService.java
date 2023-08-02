@@ -70,9 +70,12 @@ public class BoardService {
         response.setName(board.getTitle());
 
         Map<Integer, String> columns = new HashMap<>();
-        // TODO: fill in the columns map based on the board entity
+        columns.put(1, "To Do");
+        columns.put(2, "In progress");
+        columns.put(3, "Done");
         response.setColumns(columns);
 
         return response;
     }
 }
+
