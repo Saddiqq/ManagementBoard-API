@@ -67,7 +67,7 @@ public class BoardService {
     private BoardResponse convertToBoardResponse(Board board) {
         BoardResponse response = new BoardResponse();
         response.setBoardId(board.getId());
-        response.setName(board.getTitle());
+        response.setTitle(board.getTitle()); // replaced setName() with setTitle()
 
         Map<Integer, String> columns = new HashMap<>();
         columns.put(1, "To Do");
