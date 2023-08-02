@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CardService {
@@ -49,7 +50,9 @@ public class CardService {
                 .orElseThrow(() -> new NoSuchElementException("Card with id " + id + " not found in board " + boardId));
     }
 
-    public void deleteCard(Long boardId, Long id) {
-        cardRepository.findByIdAndBoardId(id, boardId).ifPresent(cardRepository::delete);
+    public Optional<Card> deleteCard(Long boardId, Long id) {
+        Optional<Card> card = cardRepository.findByIdAndBoardId(id, boardId);
+        card.ifPresent(cardRepository::delete);
+        return card;
     }
 }
