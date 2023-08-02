@@ -5,7 +5,7 @@ import java.util.Map;
 public class BoardResponse {
 
     private Long boardId;
-    private String name;
+    private String title; // replaced name with title
     private Map<Integer, String> columns;
 
     // Getters and setters
@@ -18,12 +18,12 @@ public class BoardResponse {
         this.boardId = boardId;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() { // changed getName() to getTitle()
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) { // changed setName() to setTitle()
+        this.title = title;
     }
 
     public Map<Integer, String> getColumns() {
