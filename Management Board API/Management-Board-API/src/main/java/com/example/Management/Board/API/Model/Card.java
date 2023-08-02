@@ -12,15 +12,19 @@ public class Card extends BaseEntity {
     @Column(nullable = false)
     private Integer section;
 
+    @Column(nullable = true)
+    private String description;
+
     @ManyToOne
     private Board board;
 
     // Default constructor
     public Card() {}
 
-    public Card(String title, Integer section, Board board) {
+    public Card(String title, Integer section, String description, Board board) {
         this.title = title;
         this.section = section;
+        this.description = description;
         this.board = board;
     }
 
@@ -38,6 +42,14 @@ public class Card extends BaseEntity {
 
     public void setSection(Integer section) {
         this.section = section;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Board getBoard() {
