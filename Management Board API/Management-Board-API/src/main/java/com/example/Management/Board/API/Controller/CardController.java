@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/boards/{boardId}/cards")
@@ -46,8 +47,13 @@ public class CardController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCard(@PathVariable Long boardId, @PathVariable("id") Long id) {
-        cardService.deleteCard(boardId, id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> deleteCard(@PathVariable Long boardId, @PathVariable("id") Long id) {
+        Optional<Card> deletedCard = cardService.deleteCard(boardId, id);
+        if (deletedCard.isPresent()) {
+            return new ResponseEntity<>(String.format("Card with ID %d has been deleted successfully from board %d.",
+                    deletedCard.get().getId(), boardId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(String.format("Card with id %d not found in board %d", id, boardId), HttpStatus.NOT_FOUND);
+        }
     }
 }
