@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/board/{boardId}/cards")
+@RequestMapping("/api/boards/{boardId}/cards")
 public class CardController {
 
     private final CardService cardService;
@@ -21,32 +21,32 @@ public class CardController {
     }
 
     @PostMapping
-    public ResponseEntity<Card> createCard(@RequestBody Card card) {
-        Card newCard = cardService.addCard(card);
+    public ResponseEntity<Card> createCard(@PathVariable Long boardId, @RequestBody Card card) {
+        Card newCard = cardService.addCard(boardId, card);
         return new ResponseEntity<>(newCard, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Card>> getAllCards() {
-        List<Card> cards = cardService.findAllCards();
+    public ResponseEntity<List<Card>> getAllCards(@PathVariable Long boardId) {
+        List<Card> cards = cardService.findAllCards(boardId);
         return new ResponseEntity<>(cards, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Card> getCardById(@PathVariable("id") Long id) {
-        Card card = cardService.findCardById(id);
+    public ResponseEntity<Card> getCardById(@PathVariable Long boardId, @PathVariable("id") Long id) {
+        Card card = cardService.findCardById(boardId, id);
         return new ResponseEntity<>(card, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Card> updateCard(@PathVariable("id") Long id, @RequestBody Card card) {
-        Card updatedCard = cardService.updateCard(card);
+    public ResponseEntity<Card> updateCard(@PathVariable Long boardId, @PathVariable("id") Long id, @RequestBody Card card) {
+        Card updatedCard = cardService.updateCard(boardId, card);
         return new ResponseEntity<>(updatedCard, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCard(@PathVariable("id") Long id) {
-        cardService.deleteCard(id);
+    public ResponseEntity<?> deleteCard(@PathVariable Long boardId, @PathVariable("id") Long id) {
+        cardService.deleteCard(boardId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
