@@ -33,12 +33,16 @@ public class CardService {
         return cardRepository.findByBoardId(boardId);
     }
 
-    public Card updateCard(Long boardId, Card card) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NoSuchElementException("Board with id " + boardId + " not found"));
-        card.setBoard(board);
+    public Card updateCard(Long boardId, Long cardId, Card cardDetails) {
+        Card card = cardRepository.findByIdAndBoardId(cardId, boardId)
+                .orElseThrow(() -> new NoSuchElementException("Card with id " + cardId + " not found"));
+
+        card.setTitle(cardDetails.getTitle());
+        card.setSection(cardDetails.getSection());
+
         return cardRepository.save(card);
     }
+
 
     public Card findCardById(Long boardId, Long id) {
         return cardRepository.findByIdAndBoardId(id, boardId)
