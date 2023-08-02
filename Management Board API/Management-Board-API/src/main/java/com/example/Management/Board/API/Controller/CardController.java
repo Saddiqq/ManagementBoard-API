@@ -39,10 +39,11 @@ public class CardController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Card> updateCard(@PathVariable Long boardId, @PathVariable("id") Long id, @RequestBody Card card) {
-        Card updatedCard = cardService.updateCard(boardId, card);
+    public ResponseEntity<Card> updateCard(@PathVariable Long boardId, @PathVariable("id") Long id, @RequestBody Card cardDetails) {
+        Card updatedCard = cardService.updateCard(boardId, id, cardDetails);
         return new ResponseEntity<>(updatedCard, HttpStatus.OK);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCard(@PathVariable Long boardId, @PathVariable("id") Long id) {
