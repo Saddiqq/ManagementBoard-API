@@ -63,4 +63,71 @@ function createCard() {
     var cardData = {
         title: cardTitle,
         section: section,
-        description
+        description: description
+    };
+
+    fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cardData),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Card created:', data);
+        getAllCards(boardId);
+    })
+    .catch((error) => console.error('Error:', error));
+}
+
+function getAllCards(boardId) {
+    const selectedBoard = boardsData.find(board => board.boardId == boardId);
+
+    if(selectedBoard) {
+        let boardInfo = document.getElementById('boardInfo');
+        boardInfo.innerHTML = `Board ID: ${selectedBoard.boardId}<br>Title: ${selectedBoard.title}<br>Number of Columns: ${selectedBoard.columns}`;
+
+        httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
+            let cards = JSON.parse(data);
+            let todo = document.getElementById('todo');
+            let inProgress = document.getElementById('inProgress');
+            let done = document.getElementById('done');
+            todo.innerHTML = '<h3>To Do</h3>';
+            inProgress.innerHTML = '<h3>In Progress</h3>';
+            done.innerHTML = '<h3>Done</h3>';
+
+            cards.forEach(card => {
+                switch(card.section) {
+                    case 1:
+                        todo.innerHTML += `<div class='card'><p>${card.id} - ${card.title} - ${card.description}</p></div>`;
+                        break;
+                    case 2:
+                        inProgress.innerHTML += `<div class='card'><p>${card.id} - ${card.title} - ${card.description}</p></div>`;
+                        break;
+                    case 3:
+                        done.innerHTML += `<div class='card'><p>${card.id} - ${card.title} - ${card.description}</p></div>`;
+                        break;
+                    default:
+                        console.error(`Unexpected section number: ${card.section}`);
+                }
+            });
+        });
+    } else {
+        let boardInfo = document.getElementById('boardInfo');
+        boardInfo.innerHTML = '';
+        let todo = document.getElementById('todo');
+        let inProgress = document.getElementById('inProgress');
+        let done = document.getElementById('done');
+        todo.innerHTML = '<h3>To Do</h3>';
+        inProgress.innerHTML = '<h3>In Progress</h3>';
+        done.innerHTML = '<h3>Done</h3>';
+    }
+}
+
+window.onload = getAllBoards;
