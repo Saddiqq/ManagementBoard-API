@@ -17,18 +17,17 @@ function getAllBoards() {
         const boards = JSON.parse(responseText);
         console.log('Received boards:', boards); // Log received data
 
-        const select = document.getElementById("boards");
+        const select = document.getElementById("boardSelect"); // Update "boards" to "boardSelect"
         select.innerHTML = ""; // Empty the dropdown first
         boards.forEach(function(board) {
-            console.log('Adding board with id', board.id, 'and title', board.title); // Log each board data
+            console.log('Adding board with id', board.boardId, 'and title', board.title); // Log each board data
             const opt = document.createElement('option');
-            opt.value = board.id;
+            opt.value = board.boardId;
             opt.innerHTML = board.title;
             select.appendChild(opt);
         });
     });
 }
-
 
 // Function to create a new board
 function createBoard() {
@@ -109,8 +108,6 @@ function getAllCards(boardId) {
         cardList.innerHTML = ''; // Clear card list when no board is selected
     }
 }
-
-
 
 // Fetch all boards when the page loads
 window.onload = getAllBoards;
