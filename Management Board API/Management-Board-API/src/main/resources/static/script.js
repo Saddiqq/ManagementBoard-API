@@ -44,12 +44,17 @@ function getAllBoards() {
     });
 }
 
-// Function to create a new card
 function createCard() {
     var boardId = document.getElementById('cardBoardId').value;
     var cardTitle = document.getElementById('cardTitle').value;
     var section = document.getElementById('cardSection').value;
     var description = document.getElementById('cardDescription').value;
+
+    // Check if required fields are not empty
+    if (!boardId || !cardTitle || !section || !description) {
+        alert("All fields are required to create a card.");
+        return;
+    }
 
     fetch(`/api/boards/${boardId}/cards`, {
         method: 'POST',
@@ -62,13 +67,19 @@ function createCard() {
             description: description
         }),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('Card created:', data);
         getAllCards(boardId); // refresh the list of cards
     })
     .catch((error) => console.error('Error:', error));
 }
+
 
 // Function to fetch all cards of a board
 function getAllCards(boardId) {
