@@ -39,13 +39,23 @@ function createBoard() {
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
         let boards = JSON.parse(data);
+
+        // Update the board list
         let boardList = document.getElementById('boardList');
         boardList.innerHTML = '';
         boards.forEach(board => {
             boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
         });
+
+        // Update the select dropdown
+        let boardSelect = document.getElementById('boardSelect');
+        boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
+        boards.forEach(board => {
+            boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
+        });
     });
 }
+
 
 // Function to create a new card
 function createCard() {
