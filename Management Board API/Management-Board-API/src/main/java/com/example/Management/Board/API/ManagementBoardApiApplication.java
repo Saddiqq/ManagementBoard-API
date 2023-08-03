@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 @CrossOrigin
 @EnableJpaAuditing // Add this annotation to enable JPA Auditing
-public class 		ManagementBoardApiApplication {
+public class 			ManagementBoardApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ManagementBoardApiApplication.class, args);
