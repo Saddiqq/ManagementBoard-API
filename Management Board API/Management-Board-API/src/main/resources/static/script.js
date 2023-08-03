@@ -11,6 +11,20 @@ function httpGetAsync(theUrl, callback) {
     xmlHttp.send(null);
 }
 
+// Function to fetch all boards
+function getAllBoards() {
+    httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
+        let boards = JSON.parse(data);
+
+        // Update the select dropdown
+        let boardSelect = document.getElementById('boardSelect');
+        boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
+        boards.forEach(board => {
+            boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
+        });
+    });
+}
+
 // Function to create a new board
 function createBoard() {
     var boardTitle = document.getElementById('boardTitle').value;
@@ -52,8 +66,6 @@ function createCard() {
         section: section,
         description: description
     };
-
-    console.log("Card data:", cardData); // Log the card data
 
     fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'POST',
