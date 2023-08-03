@@ -1,5 +1,10 @@
 const apiURL = 'http://localhost:8080'; // Set your API base url
 
+// Fetch and display all boards when the page loads
+window.onload = function() {
+  fetchBoards();
+}
+
 // Function to fetch and display all boards
 function fetchBoards() {
     fetch(`${apiURL}/api/boards`)
@@ -9,8 +14,9 @@ function fetchBoards() {
             boardList.innerHTML = ''; // Clear the list
             data.forEach(board => {
                 const boardElement = document.createElement('div');
-                boardElement.innerText = board.title;
+                boardElement.innerText = `Board Id: ${board.id}, Title: ${board.title}, Columns: ${board.columns}`;
                 boardList.appendChild(boardElement);
+                fetchCards(board.id); // Fetch and display cards of this board
             });
         })
         .catch((error) => {
@@ -27,7 +33,7 @@ function fetchCards(boardId) {
             cardList.innerHTML = ''; // Clear the list
             data.forEach(card => {
                 const cardElement = document.createElement('div');
-                cardElement.innerText = card.title;
+                cardElement.innerText = `Card Id: ${card.id}, Title: ${card.title}, Section: ${card.section}, Description: ${card.description}`;
                 cardList.appendChild(cardElement);
             });
         })
@@ -53,7 +59,7 @@ function createBoard() {
     .then(response => response.json())
     .then(data => {
         console.log('Board created: ', data);
-        fetchBoards(); // Fetch and display all boards
+        fetchBoards(); // Refresh the board list
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -80,7 +86,7 @@ function createCard() {
     .then(response => response.json())
     .then(data => {
         console.log('Card created: ', data);
-        fetchCards(cardBoardId); // Fetch and display cards of the given board
+        fetchBoards(); // Refresh the board list to also update the cards
     })
     .catch((error) => {
         console.error('Error:', error);
