@@ -1,100 +1,63 @@
-
-/* Applies a linear-gradient background to the whole body of the document. */
 body {
-    background-image: linear-gradient(to right, #fc5c7d, #6a82fb);
-    /* Sets the default font for the body to Arial, if Arial is not available, it falls back to sans-serif. */
-    font-family: Arial, sans-serif;
+  background-color: #FFF;
+  font-family: Arial, sans-serif;
 }
 
-/* The main class for a card. */
 .ag-courses_item {
-    /* The background color of the card. */
-   background-image: linear-gradient(to right, #434343 0%, black 100%);
-    /* The margin around the card. */
-    margin: 5px 0;
-    /* Padding inside the card. */
-    padding: 10px;
-    /* Rounds the corners of the card. */
-    border-radius: 9px;
-    /* Shadow beneath the card. */
-    box-shadow: 0 1px 0 rgba(9,45,66,.25);
-    /* Animation to apply the box-shadow and background-color property changes over time (0.3s). */
-    transition: box-shadow .3s, background-color .3s;
+  background-color: #ddd;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(9,45,66,.25);
+  transition: box-shadow .3s;
+  overflow: hidden; /* added to keep the expanding element within the card */
 }
 
-/* Hover effect for the card. */
-.ag-courses_item:hover {
-    /* Changes the background color when you hover over the card. */
-  background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
-    /* Changes the box shadow when you hover over the card. */
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
-/* Styles for links inside a card. */
 .ag-courses-item_link {
-    /* The color of the text. */
-    color: #000;
-    /* Removes underlines from the link. */
-    text-decoration: none;
-    /* Makes the link take up the full width and height of its parent. */
-    display: block;
+  color: #000;
+  text-decoration: none;
+  display: block;
+  position: relative; /* added to position the expanding element correctly */
 }
 
-/* Hover effect for the links inside the card. */
 .ag-courses-item_link:hover {
-    /* Removes underlines from the link when hovered. */
-    text-decoration: none;
-    /* Changes the text color to white when the link is hovered. */
-    color: #FFF;
+  text-decoration: none;
+  color: #FFF;
 }
 
-/* Styles for the special background effect when hovering over a card. */
 .ag-courses-item_link:hover .ag-courses-item_bg {
-    /* Scales up the size of the element by a factor of 10 when the link is hovered. */
-    -webkit-transform: scale(10);
-    -ms-transform: scale(10);
-    transform: scale(10);
+  -webkit-transform: scale(10);
+  -ms-transform: scale(10);
+  transform: scale(10);
 }
 
-/* The initial style for the special background effect. */
 .ag-courses-item_bg {
-    height: 128px;
-    width: 128px;
-    background-color: #f9b234;
-    /* Sets the stacking order of the element. */
-    z-index: 1;
-    /* Positions the element in an absolute position. */
-    position: absolute;
-    /* The position from the top of the viewport. */
-    top: -75px;
-    /* The position from the right of the viewport. */
-    right: -75px;
-    /* Rounds the corners of the element. */
-    border-radius: 50%;
-    /* Animation to apply the size change over time (0.5s). */
-    -webkit-transition: all .5s ease;
-    -o-transition: all .5s ease;
-    transition: all .5s ease;
+  height: 64px; /* adjusted to fit in the card */
+  width: 64px; /* adjusted to fit in the card */
+  background-color: #f9b234; /* color of the "patch" */
+  z-index: 1;
+  position: absolute;
+  top: 0; /* adjusted to be in the top right corner */
+  right: 0; /* adjusted to be in the top right corner */
+  border-radius: 50%;
+  -webkit-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease;
 }
 
-/* Style for the columns in a kanban board. */
+.ag-courses_item:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
 .column {
-    /* Makes the element float to the left. */
-    float: left;
-    /* Sets the width of the column to 30% of its parent element. */
-    width: 30%;
-    /* Padding inside the column. */
-    padding: 10px;
-    /* Adjusts the width and height of the column to include the padding. */
-    box-sizing: border-box;
+  float: left;
+  width: 30%;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-/* Styles applied after the columns to clear the float. */
 .row::after {
-    /* Inserts content after the columns. */
-    content: "";
-    /* Prevents the columns from floating. */
-    clear: both;
-    /* Makes the element behave like a table. */
-    display: table;
+  content: "";
+  clear: both;
+  display: table;
 }
