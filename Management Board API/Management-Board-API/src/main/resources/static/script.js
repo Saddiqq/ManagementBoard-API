@@ -1,3 +1,6 @@
+
+const BASE_URL = "http://localhost:8080";
+
 // AJAX function to perform a get request
 function httpGetAsync(theUrl, callback) {
     let xmlHttp = new XMLHttpRequest();
@@ -5,7 +8,7 @@ function httpGetAsync(theUrl, callback) {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.responseText);
     }
-    xmlHttp.open("GET", theUrl, true);
+    xmlHttp.open("GET", theUrl, true); // use theUrl instead of theUrl
     xmlHttp.send(null);
 }
 
@@ -14,7 +17,7 @@ function createBoard() {
     var boardTitle = document.getElementById('boardTitle').value;
     var numberOfColumns = document.getElementById('boardColumns').value;
 
-    fetch('/api/boards', {
+    fetch(`${BASE_URL}/api/boards`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -34,7 +37,7 @@ function createBoard() {
 
 // Function to fetch all boards
 function getAllBoards() {
-    httpGetAsync('/api/boards', function(data) {
+    httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
         let boards = JSON.parse(data);
         let boardList = document.getElementById('boardList');
         boardList.innerHTML = '';
@@ -44,6 +47,7 @@ function getAllBoards() {
     });
 }
 
+// Function to create a new card
 function createCard() {
     var boardId = document.getElementById('cardBoardId').value;
     var cardTitle = document.getElementById('cardTitle').value;
@@ -56,16 +60,20 @@ function createCard() {
         return;
     }
 
-    fetch(`/api/boards/${boardId}/cards`, {
+    var cardData = {
+        title: cardTitle,
+        section: section,
+        description: description
+    };
+
+    console.log("Card data:", cardData); // Log the card data
+
+    fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            title: cardTitle,
-            section: section,
-            description: description
-        }),
+        body: JSON.stringify(cardData),
     })
     .then(response => {
         if (!response.ok) {
@@ -83,7 +91,7 @@ function createCard() {
 
 // Function to fetch all cards of a board
 function getAllCards(boardId) {
-    httpGetAsync(`/api/boards/${boardId}/cards`, function(data) {
+    httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
         let cards = JSON.parse(data);
         let cardList = document.getElementById('cardList');
         cardList.innerHTML = '';
