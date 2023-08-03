@@ -1,4 +1,5 @@
 async function fetchData(url) {
+    console.log(`Fetching data from ${url}`); // Added log
     const response = await fetch(url, { method: 'GET' });
 
     if (!response.ok) {
@@ -54,6 +55,8 @@ function createCardDiv(boardId, card) {
 }
 
 async function fetchBoardsAndCards() {
+    console.log("Starting to fetch boards and cards."); // Added log
+
     const appDiv = document.getElementById('app');
 
     try {
@@ -79,3 +82,6 @@ async function fetchBoardsAndCards() {
         console.error('Failed to fetch boards:', error);
     }
 }
+
+// Call the function
+fetchBoardsAndCards();
