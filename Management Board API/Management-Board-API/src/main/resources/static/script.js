@@ -13,7 +13,7 @@ function httpGetAsync(theUrl, callback) {
 let boardsData = [];
 
 function getAllBoards() {
-    console.log("getAllBoards() function called"); // debugging line
+    console.log("getAllBoards() function called");
     httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
         const boards = JSON.parse(responseText);
         boardsData = boards;
@@ -29,7 +29,7 @@ function getAllBoards() {
 }
 
 function createBoard() {
-    console.log("createBoard() function called"); // debugging line
+    console.log("createBoard() function called");
     var boardTitle = document.getElementById('boardTitle').value;
     var numberOfColumns = document.getElementById('boardColumns').value;
 
@@ -52,7 +52,7 @@ function createBoard() {
 }
 
 function createCard() {
-    console.log("createCard() function called"); // debugging line
+    console.log("createCard() function called");
     var boardId = document.getElementById('cardBoardId').value;
     var cardTitle = document.getElementById('cardTitle').value;
     var section = document.getElementById('cardSection').value;
@@ -90,7 +90,7 @@ function createCard() {
 }
 
 function getAllCards(boardId) {
-    console.log("getAllCards() function called with boardId: ", boardId); // debugging line
+    console.log("getAllCards() function called with boardId: ", boardId);
     fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'GET',
         headers: {
@@ -99,8 +99,8 @@ function getAllCards(boardId) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Cards fetched successfully"); // debugging line
-        console.log("Cards data: ", data); // debugging line
+        console.log("Cards fetched successfully");
+        console.log("Cards data: ", data);
         const todoContainer = document.getElementById('todo');
         const inProgressContainer = document.getElementById('inProgress');
         const doneContainer = document.getElementById('done');
@@ -111,11 +111,14 @@ function getAllCards(boardId) {
 
         data.forEach(card => {
             const cardElement = document.createElement('div');
-            cardElement.innerHTML = `
-            <h4>${card.title}</h4>
-            <p>${card.description}</p>
-            `;
             cardElement.className = 'ag-courses_item';
+            cardElement.innerHTML = `
+                <a class="ag-courses-item_link">
+                    <div class="ag-courses-item_bg"></div>
+                    <h4>${card.title}</h4>
+                    <p>${card.description}</p>
+                </a>
+            `;
 
             switch (card.section) {
                 case 1: // 'ToDo'
