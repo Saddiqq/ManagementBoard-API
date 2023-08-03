@@ -1,5 +1,5 @@
 body {
-    background-color: #f4f4f4;
+background-image: linear-gradient(to right, #fc5c7d, #6a82fb);
     font-family: Arial, sans-serif;
 }
 
@@ -21,7 +21,7 @@ body {
 }
 
 .card {
-    background-color: #fff;
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
     margin: 5px 0;
     padding: 10px;
     border-radius: 3px;
