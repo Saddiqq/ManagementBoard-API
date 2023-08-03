@@ -91,7 +91,8 @@ function createCard() {
 
 // Function to fetch all cards of a board
 function getAllCards(boardId) {
-    if(boardId) {
+    console.log(`Getting cards for boardId ${boardId}`);  // log
+    if(boardId && boardId !== "") {
         httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
             let cards = JSON.parse(data);
             let cardList = document.getElementById('cardList');
@@ -105,6 +106,7 @@ function getAllCards(boardId) {
         cardList.innerHTML = ''; // Clear card list when no board is selected
     }
 }
+
 
 
 // Fetch all boards when the page loads
