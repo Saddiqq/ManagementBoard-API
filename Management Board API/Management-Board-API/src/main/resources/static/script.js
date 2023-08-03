@@ -1,4 +1,3 @@
-
 const BASE_URL = "http://localhost:8080";
 
 // AJAX function to perform a get request
@@ -8,7 +7,7 @@ function httpGetAsync(theUrl, callback) {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.responseText);
     }
-    xmlHttp.open("GET", theUrl, true); // use theUrl instead of theUrl
+    xmlHttp.open("GET", theUrl, true);
     xmlHttp.send(null);
 }
 
@@ -30,7 +29,7 @@ function createBoard() {
     .then(response => response.json())
     .then(data => {
         console.log('Board created:', data);
-        getAllBoards(); // refresh the list of boards
+        getAllBoards();
     })
     .catch((error) => console.error('Error:', error));
 }
@@ -38,10 +37,8 @@ function createBoard() {
 // Function to fetch all boards
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
-        console.log("Data returned from server:", data); // Added console log
         let boards = JSON.parse(data);
-
-        console.log("Parsed boards:", boards); // Added console log
+        console.log("Parsed boards:", boards);
 
         // Update the board list
         let boardList = document.getElementById('boardList');
@@ -56,12 +53,8 @@ function getAllBoards() {
         boards.forEach(board => {
             boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
         });
-
-        console.log("Updated board select:", boardSelect); // Added console log
     });
 }
-
-
 
 // Function to create a new card
 function createCard() {
@@ -82,8 +75,6 @@ function createCard() {
         description: description
     };
 
-    console.log("Card data:", cardData); // Log the card data
-
     fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'POST',
         headers: {
@@ -99,11 +90,10 @@ function createCard() {
     })
     .then(data => {
         console.log('Card created:', data);
-        getAllCards(boardId); // refresh the list of cards
+        getAllCards(boardId);
     })
     .catch((error) => console.error('Error:', error));
 }
-
 
 // Function to fetch all cards of a board
 function getAllCards(boardId) {
@@ -116,3 +106,6 @@ function getAllCards(boardId) {
         });
     });
 }
+
+// Fetch all boards when the page loads
+window.onload = getAllBoards;
