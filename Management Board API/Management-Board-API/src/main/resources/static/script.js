@@ -11,16 +11,16 @@ function httpGetAsync(theUrl, callback) {
     xmlHttp.send(null);
 }
 
+let boardsData = [];
+
 // Function to fetch all boards
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
         const boards = JSON.parse(responseText);
-        console.log('Received boards:', boards); // Log received data
-
-        const select = document.getElementById("boardSelect"); // Update "boards" to "boardSelect"
-        select.innerHTML = ""; // Empty the dropdown first
+        boardsData = boards;
+        const select = document.getElementById("boardSelect");
+        select.innerHTML = "";
         boards.forEach(function(board) {
-            console.log('Adding board with id', board.boardId, 'and title', board.title); // Log each board data
             const opt = document.createElement('option');
             opt.value = board.boardId;
             opt.innerHTML = board.title;
@@ -59,7 +59,6 @@ function createCard() {
     var section = document.getElementById('cardSection').value;
     var description = document.getElementById('cardDescription').value;
 
-    // Check if required fields are not empty
     if (!boardId || !cardTitle || !section || !description) {
         alert("All fields are required to create a card.");
         return;
@@ -93,8 +92,12 @@ function createCard() {
 
 // Function to fetch all cards of a board
 function getAllCards(boardId) {
-    console.log(`Getting cards for boardId ${boardId}`);  // log
-    if(boardId && boardId !== "") {
+    const selectedBoard = boardsData.find(board => board.boardId == boardId);
+
+    if(selectedBoard) {
+        let boardInfo = document.getElementById('boardInfo');
+        boardInfo.innerHTML = `Board ID: ${selectedBoard.boardId}<br>Title: ${selectedBoard.title}<br>Number of Columns: ${selectedBoard.columns}`;
+
         httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
             let cards = JSON.parse(data);
             let cardList = document.getElementById('cardList');
@@ -104,8 +107,10 @@ function getAllCards(boardId) {
             });
         });
     } else {
+        let boardInfo = document.getElementById('boardInfo');
+        boardInfo.innerHTML = '';
         let cardList = document.getElementById('cardList');
-        cardList.innerHTML = ''; // Clear card list when no board is selected
+        cardList.innerHTML = '';
     }
 }
 
