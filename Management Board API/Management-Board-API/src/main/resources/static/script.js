@@ -41,6 +41,7 @@ async function deleteData(url) {
 }
 
 function createBoardDiv(board) {
+    console.log(board); // Added log
     const div = document.createElement('div');
     div.className = 'board';
     div.textContent = `${board.title} - Columns: ${board.columns}`;
