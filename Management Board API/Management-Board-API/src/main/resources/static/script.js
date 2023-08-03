@@ -20,10 +20,12 @@ function getAllBoards() {
         let boardSelect = document.getElementById('boardSelect');
         boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
         boards.forEach(board => {
+            console.log(`Adding board with id ${board.id} and title ${board.title}`);  // log
             boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
         });
     });
 }
+
 
 // Function to create a new board
 function createBoard() {
