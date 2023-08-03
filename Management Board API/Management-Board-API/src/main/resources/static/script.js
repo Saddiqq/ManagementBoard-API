@@ -1,4 +1,7 @@
 const BASE_URL = "http://localhost:8080";
+const COLORS = ["first-color", "second-color", "third-color", "fourth-color"];
+
+let boardsData = [];
 
 function httpGetAsync(theUrl, callback) {
     let xmlHttp = new XMLHttpRequest();
@@ -9,8 +12,6 @@ function httpGetAsync(theUrl, callback) {
     xmlHttp.open("GET", theUrl, true);
     xmlHttp.send(null);
 }
-
-let boardsData = [];
 
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
@@ -84,52 +85,57 @@ function createCard() {
     .catch((error) => console.error('Error:', error));
 }
 
-function getAllCards(boardId) {
-    fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
+async function getAllCards(boardId) {
+    const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
-    })
-    .then(response => response.json())
-    .then(data => {
-        const todoContainer = document.getElementById('todo');
-        const inProgressContainer = document.getElementById('inProgress');
-        const doneContainer = document.getElementById('done');
+    });
 
-        todoContainer.innerHTML = '<h3>To Do</h3>';
-        inProgressContainer.innerHTML = '<h3>In Progress</h3>';
-        doneContainer.innerHTML = '<h3>Done</h3>';
+    const data = await response.json();
 
-      data.forEach((card, index) => {
-          const cardElement = document.createElement('div');
-          cardElement.className = 'ag-courses_item';
-          const colorClass = getColorClass(index);
-          cardElement.innerHTML = `
+    const todoContainer = document.getElementById('todo');
+    const inProgressContainer = document.getElementById('inProgress');
+    const doneContainer = document.getElementById('done');
+
+    todoContainer.innerHTML = '<h3>To Do</h3>';
+    inProgressContainer.innerHTML = '<h3>In Progress</h3>';
+    doneContainer.innerHTML = '<h3>Done</h3>';
+
+    data.forEach(card => {
+        const cardElement = document.createElement('div');
+        cardElement.innerHTML = `
             <h4 class="card-title">${card.title}</h4>
             <p class="card-description">${card.description}</p>
-            <div class="ag-courses_item_bg ${colorClass}"></div>
-          `;
+            <div class="ag-courses_item_bg"></div>
+        `;
+        cardElement.className = 'ag-courses_item';
 
-            switch (card.section) {
-                case 1: // 'ToDo'
-                    todoContainer.appendChild(cardElement);
-                    break;
-                case 2: // 'InProgress'
-                    inProgressContainer.appendChild(cardElement);
-                    break;
-                case 3: // 'Done'
-                    doneContainer.appendChild(cardElement);
-                    break;
-            }
-        });
-    })
-    .catch(error => console.error('Error:', error));
+        switch (card.section) {
+            case 1: // 'ToDo'
+                todoContainer.appendChild(cardElement);
+                break;
+            case 2: // 'InProgress'
+                inProgressContainer.appendChild(cardElement);
+                break;
+            case 3: // 'Done'
+                doneContainer.appendChild(cardElement);
+                break;
+        }
+    });
+
+    // After loading all cards, apply color patches
+    const cards = document.querySelectorAll('.ag-courses_item');
+    applyColorPatches(cards);
 }
 
-function getColorClass(index) {
-    const colors = ['first-color', 'second-color', 'third-color', 'fourth-color'];
-    return colors[index % colors.length];
+function applyColorPatches(cards) {
+    cards.forEach((card, index) => {
+        const colorPatch = card.querySelector('.ag-courses_item_bg');
+        const colorClass = COLORS[index % COLORS.length];
+        colorPatch.classList.add(colorClass);
+    });
 }
 
 window.onload = getAllBoards;
