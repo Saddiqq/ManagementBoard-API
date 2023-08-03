@@ -1,6 +1,5 @@
 const BASE_URL = "http://localhost:8080";
 
-// AJAX function to perform a get request
 function httpGetAsync(theUrl, callback) {
     let xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -13,7 +12,6 @@ function httpGetAsync(theUrl, callback) {
 
 let boardsData = [];
 
-// Function to fetch all boards
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
         const boards = JSON.parse(responseText);
@@ -29,7 +27,6 @@ function getAllBoards() {
     });
 }
 
-// Function to create a new board
 function createBoard() {
     var boardTitle = document.getElementById('boardTitle').value;
     var numberOfColumns = document.getElementById('boardColumns').value;
@@ -47,12 +44,11 @@ function createBoard() {
     .then(response => response.json())
     .then(data => {
         console.log('Board created:', data);
-        getAllBoards(); // refresh the list of boards
+        getAllBoards();
     })
     .catch((error) => console.error('Error:', error));
 }
 
-// Function to create a new card
 function createCard() {
     var boardId = document.getElementById('cardBoardId').value;
     var cardTitle = document.getElementById('cardTitle').value;
@@ -85,12 +81,11 @@ function createCard() {
     })
     .then(data => {
         console.log('Card created:', data);
-        getAllCards(boardId); // refresh the list of cards
+        getAllCards(boardId);
     })
     .catch((error) => console.error('Error:', error));
 }
 
-// Function to fetch all cards of a board
 function getAllCards(boardId) {
     const selectedBoard = boardsData.find(board => board.boardId == boardId);
 
@@ -100,19 +95,39 @@ function getAllCards(boardId) {
 
         httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
             let cards = JSON.parse(data);
-            let cardList = document.getElementById('cardList');
-            cardList.innerHTML = '';
+            let todo = document.getElementById('todo');
+            let inProgress = document.getElementById('inProgress');
+            let done = document.getElementById('done');
+            todo.innerHTML = '<h3>To Do</h3>';
+            inProgress.innerHTML = '<h3>In Progress</h3>';
+            done.innerHTML = '<h3>Done</h3>';
+
             cards.forEach(card => {
-                cardList.innerHTML += `<p>${card.id} - ${card.title} - ${card.section} - ${card.description}</p>`;
+                switch(card.section) {
+                    case 1:
+                        todo.innerHTML += `<p>${card.id} - ${card.title} - ${card.description}</p>`;
+                        break;
+                    case 2:
+                        inProgress.innerHTML += `<p>${card.id} - ${card.title} - ${card.description}</p>`;
+                        break;
+                    case 3:
+                        done.innerHTML += `<p>${card.id} - ${card.title} - ${card.description}</p>`;
+                        break;
+                    default:
+                        console.error(`Unexpected section number: ${card.section}`);
+                }
             });
         });
     } else {
         let boardInfo = document.getElementById('boardInfo');
         boardInfo.innerHTML = '';
-        let cardList = document.getElementById('cardList');
-        cardList.innerHTML = '';
+        let todo = document.getElementById('todo');
+        let inProgress = document.getElementById('inProgress');
+        let done = document.getElementById('done');
+        todo.innerHTML = '<h3>To Do</h3>';
+        inProgress.innerHTML = '<h3>In Progress</h3>';
+        done.innerHTML = '<h3>Done</h3>';
     }
 }
 
-// Fetch all boards when the page loads
 window.onload = getAllBoards;
