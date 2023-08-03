@@ -29,7 +29,7 @@ function createBoard() {
     .then(response => response.json())
     .then(data => {
         console.log('Board created:', data);
-        getAllBoards();
+        getAllBoards(); // refresh the list of boards
     })
     .catch((error) => console.error('Error:', error));
 }
@@ -37,34 +37,26 @@ function createBoard() {
 // Function to fetch all boards
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
+        console.log("Data returned from server:", data);
         let boards = JSON.parse(data);
+
         console.log("Parsed boards:", boards);
 
         // Update the board list
         let boardList = document.getElementById('boardList');
         boardList.innerHTML = '';
         boards.forEach(board => {
-            if(board.id && board.title){ // Check if id and title are not undefined
-                boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
-            }
+            boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
         });
 
         // Update the select dropdown
         let boardSelect = document.getElementById('boardSelect');
         boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
         boards.forEach(board => {
-            if(board.id && board.title){ // Check if id and title are not undefined
-                boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
-            }
+            boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
         });
 
-        // Add event listener to fetch all cards of the selected board
-        boardSelect.addEventListener('change', function() {
-            let boardId = this.value;
-            if (boardId) {
-                getAllCards(boardId);
-            }
-        });
+        console.log("Updated board select:", boardSelect);
     });
 }
 
@@ -87,6 +79,8 @@ function createCard() {
         description: description
     };
 
+    console.log("Card data:", cardData); // Log the card data
+
     fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'POST',
         headers: {
@@ -102,7 +96,7 @@ function createCard() {
     })
     .then(data => {
         console.log('Card created:', data);
-        getAllCards(boardId);
+        getAllCards(boardId); // refresh the list of cards
     })
     .catch((error) => console.error('Error:', error));
 }
