@@ -1,63 +1,63 @@
 body {
-  background-color: #FFF;
   font-family: Arial, sans-serif;
-}
-
-.ag-courses_item {
-  background-color: #ddd;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 3px;
-  box-shadow: 0 1px 0 rgba(9,45,66,.25);
-  transition: box-shadow .3s;
-  overflow: hidden; /* added to keep the expanding element within the card */
-}
-
-.ag-courses-item_link {
-  color: #000;
-  text-decoration: none;
-  display: block;
-  position: relative; /* added to position the expanding element correctly */
-}
-
-.ag-courses-item_link:hover {
-  text-decoration: none;
-  color: #FFF;
-}
-
-.ag-courses-item_link:hover .ag-courses-item_bg {
-  -webkit-transform: scale(10);
-  -ms-transform: scale(10);
-  transform: scale(10);
-}
-
-.ag-courses-item_bg {
-  height: 64px; /* adjusted to fit in the card */
-  width: 64px; /* adjusted to fit in the card */
-  background-color: #f9b234; /* color of the "patch" */
-  z-index: 1;
-  position: absolute;
-  top: 0; /* adjusted to be in the top right corner */
-  right: 0; /* adjusted to be in the top right corner */
-  border-radius: 50%;
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
-  transition: all .5s ease;
-}
-
-.ag-courses_item:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
 .column {
   float: left;
   width: 30%;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
 }
 
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
+.column h3 {
+  text-align: center;
+}
+
+.ag-courses_item {
+  background: #eaeaea;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 1s ease-in-out;
+}
+
+.ag-courses_item h4 {
+  margin: 0 0 10px 0;
+}
+
+.ag-courses_item_bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50% 0 0 50%;
+  transition: all 1s ease-in-out;
+}
+
+.ag-courses_item:hover {
+  background-color: transparent;
+}
+
+.ag-courses_item:hover .ag-courses_item_bg {
+  width: 200%;
+  height: 200%;
+}
+
+.first-color {
+  background: #394a51;
+}
+
+.second-color {
+  background: #7fa99b;
+}
+
+.third-color {
+  background: #fbf2d5;
+}
+
+.fourth-color {
+  background: #fdc57b;
 }
