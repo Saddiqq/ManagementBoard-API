@@ -1,20 +1,37 @@
-const appDiv = document.getElementById('app');
+async function fetch(url) {
+    const response = await fetch(url, { method: 'GET' });
+    const data = await response.json();
+    return data;
+}
 
-async function fetchBoardsAndCards() {
-    const boards = await fetch('http://localhost:8080/api/boards').then(response => response.json());
-
-    for (const board of boards) {
-        const boardDiv = createBoardDiv(board);
-
-        const cards = await fetch(`http://localhost:8080/api/boards/${board.boardId}/cards`).then(response => response.json());
-
-        for (const card of cards) {
-            const cardDiv = createCardDiv(card);
-            boardDiv.appendChild(cardDiv);
+async function put(url, body) {
+    const response = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
         }
+    });
+    const data = await response.json();
+    return data;
+}
 
-        appDiv.appendChild(boardDiv);
-    }
+async function post(url, body) {
+    const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
+async function del(url) {
+    const response = await fetch(url, { method: 'DELETE' });
+    const data = await response.json();
+    return data;
 }
 
 function createBoardDiv(board) {
@@ -24,57 +41,63 @@ function createBoardDiv(board) {
         <h2>${board.title}</h2>
         <button onclick="updateBoard(${board.boardId})">Update Board</button>
         <button onclick="deleteBoard(${board.boardId})">Delete Board</button>
+        <button onclick="addCard(${board.boardId})">Add Card</button>
     `;
     return boardDiv;
 }
 
-function createCardDiv(card) {
+function createCardDiv(boardId, card) {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card';
     cardDiv.innerHTML = `
         ${card.title}
-        <button onclick="updateCard(${card.boardId}, ${card.id})">Update Card</button>
-        <button onclick="deleteCard(${card.boardId}, ${card.id})">Delete Card</button>
+        <button onclick="updateCard(${boardId}, ${card.id})">Update Card</button>
+        <button onclick="deleteCard(${boardId}, ${card.id})">Delete Card</button>
     `;
     return cardDiv;
 }
 
 async function updateBoard(boardId) {
-    const updatedBoard = { title: 'New title' }; // You would probably fetch this from a form
-    const response = await fetch(`http://localhost:8080/api/boards/${boardId}`, {
-        method: 'PUT',
-        body: JSON.stringify(updatedBoard),
-        headers: { 'Content-Type': 'application/json' },
-    });
-    if (response.ok) {
-        console.log(`Board ${boardId} updated`);
-    }
+    const updatedBoard = await put(`http://localhost:8080/api/boards/${boardId}`, { title: 'Updated Board Title' });
+    console.log('Board updated', updatedBoard);
 }
 
 async function deleteBoard(boardId) {
-    const response = await fetch(`http://localhost:8080/api/boards/${boardId}`, { method: 'DELETE' });
-    if (response.ok) {
-        console.log(`Board ${boardId} deleted`);
-    }
+    const deleteResponse = await del(`http://localhost:8080/api/boards/${boardId}`);
+    console.log('Board deleted', deleteResponse);
+}
+
+async function addCard(boardId) {
+    const newCard = await post(`http://localhost:8080/api/boards/${boardId}/cards`, { title: 'New Card' });
+    console.log('Card added', newCard);
 }
 
 async function updateCard(boardId, cardId) {
-    const updatedCard = { title: 'New card title' }; // You would probably fetch this from a form
-    const response = await fetch(`http://localhost:8080/api/boards/${boardId}/cards/${cardId}`, {
-        method: 'PUT',
-        body: JSON.stringify(updatedCard),
-        headers: { 'Content-Type': 'application/json' },
-    });
-    if (response.ok) {
-        console.log(`Card ${cardId} updated`);
-    }
+    const updatedCard = await put(`http://localhost:8080/api/boards/${boardId}/cards/${cardId}`, { title: 'Updated Card Title' });
+    console.log('Card updated', updatedCard);
 }
 
 async function deleteCard(boardId, cardId) {
-    const response = await fetch(`http://localhost:8080/api/boards/${boardId}/cards/${cardId}`, { method: 'DELETE' });
-    if (response.ok) {
-        console.log(`Card ${cardId} deleted`);
+    const deleteResponse = await del(`http://localhost:8080/api/boards/${boardId}/cards/${cardId}`);
+    console.log('Card deleted', deleteResponse);
+}
+
+async function fetchBoardsAndCards() {
+    const appDiv = document.getElementById('app');
+    const boards = await fetch('http://localhost:8080/api/boards').then(response => response.json());
+
+    for (const board of boards) {
+        const boardDiv = createBoardDiv(board);
+
+        const cards = await fetch(`http://localhost:8080/api/boards/${board.boardId}/cards`).then(response => response.json());
+
+        for (const card of cards) {
+            const cardDiv = createCardDiv(board.boardId, card);
+            boardDiv.appendChild(cardDiv);
+        }
+
+        appDiv.appendChild(boardDiv);
     }
 }
 
-fetchBoardsAndCards();
+window.onload = fetchBoardsAndCards;
