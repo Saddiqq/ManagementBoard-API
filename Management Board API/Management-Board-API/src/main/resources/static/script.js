@@ -1,5 +1,10 @@
 async function fetchData(url) {
     const response = await fetch(url, { method: 'GET' });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
     return data;
 }
@@ -50,19 +55,27 @@ function createCardDiv(boardId, card) {
 
 async function fetchBoardsAndCards() {
     const appDiv = document.getElementById('app');
-    const boards = await fetchData('http://localhost:8080/api/boards');
 
-    for (const board of boards) {
-        const boardDiv = createBoardDiv(board);
-        const cards = await fetchData(`http://localhost:8080/api/boards/${board.id}/cards`);
+    try {
+        const boards = await fetchData('http://localhost:8080/api/boards');
 
-        for (const card of cards) {
-            const cardDiv = createCardDiv(board.id, card);
-            boardDiv.appendChild(cardDiv);
+        for (const board of boards) {
+            const boardDiv = createBoardDiv(board);
+
+            try {
+                const cards = await fetchData(`http://localhost:8080/api/boards/${board.id}/cards`);
+
+                for (const card of cards) {
+                    const cardDiv = createCardDiv(board.id, card);
+                    boardDiv.appendChild(cardDiv);
+                }
+            } catch (error) {
+                console.error('Failed to fetch cards:', error);
+            }
+
+            appDiv.appendChild(boardDiv);
         }
-
-        appDiv.appendChild(boardDiv);
+    } catch (error) {
+        console.error('Failed to fetch boards:', error);
     }
 }
-
-window.onload = fetchBoardsAndCards;
