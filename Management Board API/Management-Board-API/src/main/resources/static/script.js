@@ -1,5 +1,41 @@
 const apiURL = 'http://localhost:8080'; // Set your API base url
 
+// Function to fetch and display all boards
+function fetchBoards() {
+    fetch(`${apiURL}/api/boards`)
+        .then(response => response.json())
+        .then(data => {
+            const boardList = document.getElementById('boardList');
+            boardList.innerHTML = ''; // Clear the list
+            data.forEach(board => {
+                const boardElement = document.createElement('div');
+                boardElement.innerText = board.title;
+                boardList.appendChild(boardElement);
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+}
+
+// Function to fetch and display cards of a specific board
+function fetchCards(boardId) {
+    fetch(`${apiURL}/api/boards/${boardId}/cards`)
+        .then(response => response.json())
+        .then(data => {
+            const cardList = document.getElementById('cardList');
+            cardList.innerHTML = ''; // Clear the list
+            data.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.innerText = card.title;
+                cardList.appendChild(cardElement);
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+}
+
 function createBoard() {
     const boardTitle = document.getElementById('boardTitle').value;
     const boardColumns = document.getElementById('boardColumns').value;
@@ -17,7 +53,7 @@ function createBoard() {
     .then(response => response.json())
     .then(data => {
         console.log('Board created: ', data);
-        // TODO: Add the new board to the board list in the UI
+        fetchBoards(); // Fetch and display all boards
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -44,7 +80,7 @@ function createCard() {
     .then(response => response.json())
     .then(data => {
         console.log('Card created: ', data);
-        // TODO: Add the new card to the card list in the UI
+        fetchCards(cardBoardId); // Fetch and display cards of the given board
     })
     .catch((error) => {
         console.error('Error:', error);
