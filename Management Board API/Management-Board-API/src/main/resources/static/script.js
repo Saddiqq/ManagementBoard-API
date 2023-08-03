@@ -34,32 +34,6 @@ function createBoard() {
     .catch((error) => console.error('Error:', error));
 }
 
-// Function to fetch all boards
-function getAllBoards() {
-    httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
-        console.log("Data returned from server:", data);
-        let boards = JSON.parse(data);
-
-        console.log("Parsed boards:", boards);
-
-        // Update the board list
-        let boardList = document.getElementById('boardList');
-        boardList.innerHTML = '';
-        boards.forEach(board => {
-            boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
-        });
-
-        // Update the select dropdown
-        let boardSelect = document.getElementById('boardSelect');
-        boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
-        boards.forEach(board => {
-            boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
-        });
-
-        console.log("Updated board select:", boardSelect);
-    });
-}
-
 // Function to create a new card
 function createCard() {
     var boardId = document.getElementById('cardBoardId').value;
