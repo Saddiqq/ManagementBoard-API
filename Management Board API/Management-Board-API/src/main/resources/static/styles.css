@@ -1,3 +1,4 @@
+
 /* Applies a linear-gradient background to the whole body of the document. */
 body {
     background-image: linear-gradient(to right, #fc5c7d, #6a82fb);
@@ -8,13 +9,13 @@ body {
 /* The main class for a card. */
 .ag-courses_item {
     /* The background color of the card. */
-    background-color: #ddd;
+   background-image: linear-gradient(to right, #434343 0%, black 100%);
     /* The margin around the card. */
     margin: 5px 0;
     /* Padding inside the card. */
     padding: 10px;
     /* Rounds the corners of the card. */
-    border-radius: 3px;
+    border-radius: 9px;
     /* Shadow beneath the card. */
     box-shadow: 0 1px 0 rgba(9,45,66,.25);
     /* Animation to apply the box-shadow and background-color property changes over time (0.3s). */
@@ -24,7 +25,7 @@ body {
 /* Hover effect for the card. */
 .ag-courses_item:hover {
     /* Changes the background color when you hover over the card. */
-    background-color: #bbb;
+  background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
     /* Changes the box shadow when you hover over the card. */
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
