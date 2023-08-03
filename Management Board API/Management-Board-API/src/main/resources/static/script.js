@@ -118,15 +118,15 @@ function getAllCards(boardId) {
             cardElement.className = 'ag-courses_item';
 
             switch (card.section) {
-            case 'ToDo':
-                todoContainer.appendChild(cardElement);
-                break;
-            case 'InProgress':
-                inProgressContainer.appendChild(cardElement);
-                break;
-            case 'Done':
-                doneContainer.appendChild(cardElement);
-                break;
+                case 1: // 'ToDo'
+                    todoContainer.appendChild(cardElement);
+                    break;
+                case 2: // 'InProgress'
+                    inProgressContainer.appendChild(cardElement);
+                    break;
+                case 3: // 'Done'
+                    doneContainer.appendChild(cardElement);
+                    break;
             }
         });
     })
