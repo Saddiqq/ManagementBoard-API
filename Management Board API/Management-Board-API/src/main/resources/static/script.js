@@ -1,94 +1,61 @@
-const apiURL = 'http://localhost:8080'; // Set your API base url
-
-// Fetch and display all boards when the page loads
-window.onload = function() {
-  fetchBoards();
+// AJAX function to perform a get request
+function httpGetAsync(theUrl, callback) {
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true);
+    xmlHttp.send(null);
 }
 
-// Function to fetch and display all boards
-function fetchBoards() {
-    fetch(`${apiURL}/api/boards`)
-        .then(response => response.json())
-        .then(data => {
-            const boardList = document.getElementById('boardList');
-            boardList.innerHTML = ''; // Clear the list
-            data.forEach(board => {
-                const boardElement = document.createElement('div');
-                boardElement.innerText = `Board Id: ${board.id}, Title: ${board.title}, Columns: ${board.columns}`;
-                boardList.appendChild(boardElement);
-                fetchCards(board.id); // Fetch and display cards of this board
-            });
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-}
-
-// Function to fetch and display cards of a specific board
-function fetchCards(boardId) {
-    fetch(`${apiURL}/api/boards/${boardId}/cards`)
-        .then(response => response.json())
-        .then(data => {
-            const cardList = document.getElementById('cardList');
-            cardList.innerHTML = ''; // Clear the list
-            data.forEach(card => {
-                const cardElement = document.createElement('div');
-                cardElement.innerText = `Card Id: ${card.id}, Title: ${card.title}, Section: ${card.section}, Description: ${card.description}`;
-                cardList.appendChild(cardElement);
-            });
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-}
-
-function createBoard() {
-    const boardTitle = document.getElementById('boardTitle').value;
-    const boardColumns = document.getElementById('boardColumns').value;
-
-    fetch(`${apiURL}/api/boards`, {
+// Function to create a new board
+function createBoard(boardTitle, numberOfColumns) {
+    fetch('/api/boards', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             title: boardTitle,
-            columns: boardColumns
+            columns: numberOfColumns
         }),
     })
     .then(response => response.json())
-    .then(data => {
-        console.log('Board created: ', data);
-        fetchBoards(); // Refresh the board list
-    })
-    .catch((error) => {
-        console.error('Error:', error);
+    .then(data => console.log('Board created:', data))
+    .catch((error) => console.error('Error:', error));
+}
+
+// Function to fetch all boards
+function getAllBoards() {
+    httpGetAsync('/api/boards', function(data) {
+        let boards = JSON.parse(data);
+        console.log(boards);
     });
 }
 
-function createCard() {
-    const cardBoardId = document.getElementById('cardBoardId').value;
-    const cardTitle = document.getElementById('cardTitle').value;
-    const cardSection = document.getElementById('cardSection').value;
-    const cardDescription = document.getElementById('cardDescription').value;
-
-    fetch(`${apiURL}/api/boards/${cardBoardId}/cards`, {
+// Function to create a new card
+function createCard(boardId, cardTitle, section, description) {
+    fetch(`/api/boards/${boardId}/cards`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             title: cardTitle,
-            section: cardSection,
-            description: cardDescription
+            section: section,
+            description: description
         }),
     })
     .then(response => response.json())
-    .then(data => {
-        console.log('Card created: ', data);
-        fetchBoards(); // Refresh the board list to also update the cards
-    })
-    .catch((error) => {
-        console.error('Error:', error);
+    .then(data => console.log('Card created:', data))
+    .catch((error) => console.error('Error:', error));
+}
+
+// Function to fetch all cards of a board
+function getAllCards(boardId) {
+    httpGetAsync(`/api/boards/${boardId}/cards`, function(data) {
+        let cards = JSON.parse(data);
+        console.log(cards);
     });
 }
