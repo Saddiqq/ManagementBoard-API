@@ -1,109 +1,52 @@
-async function fetchData(url) {
-    console.log(`Fetching data from ${url}`);
-    const response = await fetch(url, { method: 'GET' });
+const apiURL = 'http://localhost:8080'; // Set your API base url
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
+function createBoard() {
+    const boardTitle = document.getElementById('boardTitle').value;
+    const boardColumns = document.getElementById('boardColumns').value;
 
-    const data = await response.json();
-    return data;
-}
-
-async function putData(url, body) {
-    const response = await fetch(url, {
-        method: 'PUT',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    return data;
-}
-
-async function postData(url, body) {
-    const response = await fetch(url, {
+    fetch(`${apiURL}/api/boards`, {
         method: 'POST',
-        body: JSON.stringify(body),
         headers: {
-            'Content-Type': 'application/json'
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            title: boardTitle,
+            columns: boardColumns
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Board created: ', data);
+        // TODO: Add the new board to the board list in the UI
+    })
+    .catch((error) => {
+        console.error('Error:', error);
     });
-    const data = await response.json();
-    return data;
 }
 
-async function deleteData(url) {
-    const response = await fetch(url, { method: 'DELETE' });
-    const data = await response.json();
-    return data;
-}
+function createCard() {
+    const cardBoardId = document.getElementById('cardBoardId').value;
+    const cardTitle = document.getElementById('cardTitle').value;
+    const cardSection = document.getElementById('cardSection').value;
+    const cardDescription = document.getElementById('cardDescription').value;
 
-function createButton(name, callback) {
-    const button = document.createElement('button');
-    button.textContent = name;
-    button.addEventListener('click', callback);
-    return button;
-}
-
-function createBoardDiv(board) {
-    const div = document.createElement('div');
-    div.className = 'board';
-    div.textContent = `${board.title} - Columns: ${JSON.stringify(board.columns)}`;
-    return div;
-}
-
-function createCardDiv(boardId, card) {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.textContent = `${card.title} - Section: ${card.section} - Description: ${card.description}`;
-
-    const editButton = createButton('Edit', () => {
-        // TODO: call function to edit this card
+    fetch(`${apiURL}/api/boards/${cardBoardId}/cards`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            title: cardTitle,
+            section: cardSection,
+            description: cardDescription
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Card created: ', data);
+        // TODO: Add the new card to the card list in the UI
+    })
+    .catch((error) => {
+        console.error('Error:', error);
     });
-
-    const deleteButton = createButton('Delete', () => {
-        // TODO: call function to delete this card
-    });
-
-    const moveButton = createButton('Move', () => {
-        // TODO: call function to move this card
-    });
-
-    div.appendChild(editButton);
-    div.appendChild(deleteButton);
-    div.appendChild(moveButton);
-
-    return div;
 }
-
-async function fetchBoardsAndCards() {
-    console.log("Starting to fetch boards and cards.");
-    const appDiv = document.getElementById('app');
-
-    try {
-        const boards = await fetchData('http://localhost:8080/api/boards');
-
-        for (const board of boards) {
-            const boardDiv = createBoardDiv(board);
-
-            try {
-                const cards = await fetchData(`http://localhost:8080/api/boards/${board.boardId}/cards`);
-
-                for (const card of cards) {
-                    const cardDiv = createCardDiv(board.boardId, card);
-                    boardDiv.appendChild(cardDiv);
-                }
-            } catch (error) {
-                console.error('Failed to fetch cards:', error);
-            }
-
-            appDiv.appendChild(boardDiv);
-        }
-    } catch (error) {
-        console.error('Failed to fetch boards:', error);
-    }
-}
-
-fetchBoardsAndCards();
