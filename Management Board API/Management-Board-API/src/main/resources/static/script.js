@@ -89,15 +89,21 @@ function createCard() {
 
 // Function to fetch all cards of a board
 function getAllCards(boardId) {
-    httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
-        let cards = JSON.parse(data);
-        let cardList = document.getElementById('cardList');
-        cardList.innerHTML = '';
-        cards.forEach(card => {
-            cardList.innerHTML += `<p>${card.id} - ${card.title} - ${card.section} - ${card.description}</p>`;
+    if(boardId) {
+        httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
+            let cards = JSON.parse(data);
+            let cardList = document.getElementById('cardList');
+            cardList.innerHTML = '';
+            cards.forEach(card => {
+                cardList.innerHTML += `<p>${card.id} - ${card.title} - ${card.section} - ${card.description}</p>`;
+            });
         });
-    });
+    } else {
+        let cardList = document.getElementById('cardList');
+        cardList.innerHTML = ''; // Clear card list when no board is selected
+    }
 }
+
 
 // Fetch all boards when the page loads
 window.onload = getAllBoards;
