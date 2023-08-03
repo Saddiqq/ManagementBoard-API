@@ -10,7 +10,29 @@
 
 <body>
 <div id="app">
-  <!-- This is where our app will be rendered -->
+  <!-- Form to create new board -->
+  <div id="boardForm">
+    <h2>Create New Board</h2>
+    <input type="text" id="boardTitle" placeholder="Enter board title">
+    <input type="number" id="boardColumns" placeholder="Enter number of columns">
+    <button onclick="createBoard()">Create Board</button>
+  </div>
+
+  <!-- Placeholder for the board list -->
+  <div id="boardList"></div>
+
+  <!-- Form to create new card -->
+  <div id="cardForm">
+    <h2>Create New Card</h2>
+    <input type="number" id="cardBoardId" placeholder="Enter board ID">
+    <input type="text" id="cardTitle" placeholder="Enter card title">
+    <input type="text" id="cardSection" placeholder="Enter section">
+    <input type="text" id="cardDescription" placeholder="Enter description">
+    <button onclick="createCard()">Create Card</button>
+  </div>
+
+  <!-- Placeholder for the card list -->
+  <div id="cardList"></div>
 </div>
 <script src="script.js"></script>
 </body>
