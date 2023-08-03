@@ -87,47 +87,44 @@ function createCard() {
 }
 
 function getAllCards(boardId) {
-    const selectedBoard = boardsData.find(board => board.boardId == boardId);
+    fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        const todoContainer = document.getElementById('todo');
+        const inProgressContainer = document.getElementById('inProgress');
+        const doneContainer = document.getElementById('done');
 
-    if(selectedBoard) {
-        let boardInfo = document.getElementById('boardInfo');
-        boardInfo.innerHTML = `Board ID: ${selectedBoard.boardId}<br>Title: ${selectedBoard.title}<br>Number of Columns: ${selectedBoard.columns}`;
+        todoContainer.innerHTML = '<h3>To Do</h3>';
+        inProgressContainer.innerHTML = '<h3>In Progress</h3>';
+        doneContainer.innerHTML = '<h3>Done</h3>';
 
-        httpGetAsync(`${BASE_URL}/api/boards/${boardId}/cards`, function(data) {
-            let cards = JSON.parse(data);
-            let todo = document.getElementById('todo');
-            let inProgress = document.getElementById('inProgress');
-            let done = document.getElementById('done');
-            todo.innerHTML = '<h3>To Do</h3>';
-            inProgress.innerHTML = '<h3>In Progress</h3>';
-            done.innerHTML = '<h3>Done</h3>';
+        data.forEach(card => {
+            const cardElement = document.createElement('div');
+            cardElement.innerHTML = `
+            <h4>${card.title}</h4>
+            <p>${card.description}</p>
+            `;
+            cardElement.className = 'ag-courses_item';
 
-            cards.forEach(card => {
-                switch(card.section) {
-                    case 1:
-                        todo.innerHTML += `<div class='card'><p>${card.id} - ${card.title} - ${card.description}</p></div>`;
-                        break;
-                    case 2:
-                        inProgress.innerHTML += `<div class='card'><p>${card.id} - ${card.title} - ${card.description}</p></div>`;
-                        break;
-                    case 3:
-                        done.innerHTML += `<div class='card'><p>${card.id} - ${card.title} - ${card.description}</p></div>`;
-                        break;
-                    default:
-                        console.error(`Unexpected section number: ${card.section}`);
-                }
-            });
+            switch (card.section) {
+            case 'ToDo':
+                todoContainer.appendChild(cardElement);
+                break;
+            case 'InProgress':
+                inProgressContainer.appendChild(cardElement);
+                break;
+            case 'Done':
+                doneContainer.appendChild(cardElement);
+                break;
+            }
         });
-    } else {
-        let boardInfo = document.getElementById('boardInfo');
-        boardInfo.innerHTML = '';
-        let todo = document.getElementById('todo');
-        let inProgress = document.getElementById('inProgress');
-        let done = document.getElementById('done');
-        todo.innerHTML = '<h3>To Do</h3>';
-        inProgress.innerHTML = '<h3>In Progress</h3>';
-        done.innerHTML = '<h3>Done</h3>';
-    }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 window.onload = getAllBoards;
