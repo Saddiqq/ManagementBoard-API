@@ -44,14 +44,26 @@ function getAllBoards() {
         let boardList = document.getElementById('boardList');
         boardList.innerHTML = '';
         boards.forEach(board => {
-            boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
+            if(board.id && board.title){ // Check if id and title are not undefined
+                boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
+            }
         });
 
         // Update the select dropdown
         let boardSelect = document.getElementById('boardSelect');
         boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
         boards.forEach(board => {
-            boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
+            if(board.id && board.title){ // Check if id and title are not undefined
+                boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
+            }
+        });
+
+        // Add event listener to fetch all cards of the selected board
+        boardSelect.addEventListener('change', function() {
+            let boardId = this.value;
+            if (boardId) {
+                getAllCards(boardId);
+            }
         });
     });
 }
