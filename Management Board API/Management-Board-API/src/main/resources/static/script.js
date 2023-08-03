@@ -38,7 +38,10 @@ function createBoard() {
 // Function to fetch all boards
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
+        console.log("Data returned from server:", data); // Added console log
         let boards = JSON.parse(data);
+
+        console.log("Parsed boards:", boards); // Added console log
 
         // Update the board list
         let boardList = document.getElementById('boardList');
@@ -53,8 +56,11 @@ function getAllBoards() {
         boards.forEach(board => {
             boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
         });
+
+        console.log("Updated board select:", boardSelect); // Added console log
     });
 }
+
 
 
 // Function to create a new card
