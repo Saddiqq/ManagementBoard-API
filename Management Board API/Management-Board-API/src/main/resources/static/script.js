@@ -10,7 +10,10 @@ function httpGetAsync(theUrl, callback) {
 }
 
 // Function to create a new board
-function createBoard(boardTitle, numberOfColumns) {
+function createBoard() {
+    var boardTitle = document.getElementById('boardTitle').value;
+    var numberOfColumns = document.getElementById('boardColumns').value;
+
     fetch('/api/boards', {
         method: 'POST',
         headers: {
@@ -22,7 +25,10 @@ function createBoard(boardTitle, numberOfColumns) {
         }),
     })
     .then(response => response.json())
-    .then(data => console.log('Board created:', data))
+    .then(data => {
+        console.log('Board created:', data);
+        getAllBoards(); // refresh the list of boards
+    })
     .catch((error) => console.error('Error:', error));
 }
 
@@ -30,12 +36,21 @@ function createBoard(boardTitle, numberOfColumns) {
 function getAllBoards() {
     httpGetAsync('/api/boards', function(data) {
         let boards = JSON.parse(data);
-        console.log(boards);
+        let boardList = document.getElementById('boardList');
+        boardList.innerHTML = '';
+        boards.forEach(board => {
+            boardList.innerHTML += `<p>${board.id} - ${board.title}</p>`;
+        });
     });
 }
 
 // Function to create a new card
-function createCard(boardId, cardTitle, section, description) {
+function createCard() {
+    var boardId = document.getElementById('cardBoardId').value;
+    var cardTitle = document.getElementById('cardTitle').value;
+    var section = document.getElementById('cardSection').value;
+    var description = document.getElementById('cardDescription').value;
+
     fetch(`/api/boards/${boardId}/cards`, {
         method: 'POST',
         headers: {
@@ -48,7 +63,10 @@ function createCard(boardId, cardTitle, section, description) {
         }),
     })
     .then(response => response.json())
-    .then(data => console.log('Card created:', data))
+    .then(data => {
+        console.log('Card created:', data);
+        getAllCards(boardId); // refresh the list of cards
+    })
     .catch((error) => console.error('Error:', error));
 }
 
@@ -56,6 +74,10 @@ function createCard(boardId, cardTitle, section, description) {
 function getAllCards(boardId) {
     httpGetAsync(`/api/boards/${boardId}/cards`, function(data) {
         let cards = JSON.parse(data);
-        console.log(cards);
+        let cardList = document.getElementById('cardList');
+        cardList.innerHTML = '';
+        cards.forEach(card => {
+            cardList.innerHTML += `<p>${card.id} - ${card.title} - ${card.section} - ${card.description}</p>`;
+        });
     });
 }
