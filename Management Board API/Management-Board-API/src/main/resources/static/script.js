@@ -13,15 +13,18 @@ function httpGetAsync(theUrl, callback) {
 
 // Function to fetch all boards
 function getAllBoards() {
-    httpGetAsync(`${BASE_URL}/api/boards`, function(data) {
-        let boards = JSON.parse(data);
+    httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
+        const boards = JSON.parse(responseText);
+        console.log('Received boards:', boards); // Log received data
 
-        // Update the select dropdown
-        let boardSelect = document.getElementById('boardSelect');
-        boardSelect.innerHTML = `<option value="">--Select a board--</option>`;
-        boards.forEach(board => {
-            console.log(`Adding board with id ${board.id} and title ${board.title}`);  // log
-            boardSelect.innerHTML += `<option value="${board.id}">${board.title}</option>`;
+        const select = document.getElementById("boards");
+        select.innerHTML = ""; // Empty the dropdown first
+        boards.forEach(function(board) {
+            console.log('Adding board with id', board.id, 'and title', board.title); // Log each board data
+            const opt = document.createElement('option');
+            opt.value = board.id;
+            opt.innerHTML = board.title;
+            select.appendChild(opt);
         });
     });
 }
