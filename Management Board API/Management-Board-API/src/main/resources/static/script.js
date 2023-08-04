@@ -106,11 +106,9 @@ async function getAllCards(boardId) {
     for(const card of data) {
         const cardElement = document.createElement('div');
         cardElement.innerHTML = `
-            <a class="ag-courses-item_link">
-                <h4 class="card-title">${card.title}</h4>
-                <p class="card-description">${card.description}</p>
-                <div class="ag-courses_item_bg"></div>
-            </a>
+            <h4 class="card-title">${card.title}</h4>
+            <p class="card-description">${card.description}</p>
+            <div class="ag-courses_item_bg"></div>
         `;
         cardElement.className = 'ag-courses_item';
 
@@ -127,12 +125,14 @@ async function getAllCards(boardId) {
         }
 
         // Apply color patch after card is appended to the DOM
-        const colorPatch = cardElement.querySelector('.ag-courses_item_bg');
-        const colorClass = COLORS[colorIndex];
-        colorPatch.classList.add(colorClass);
+        setTimeout(() => {
+            const colorPatch = cardElement.querySelector('.ag-courses_item_bg');
+            const colorClass = COLORS[colorIndex];
+            colorPatch.classList.add(colorClass);
 
-        // Increase colorIndex or reset if it's out of bounds
-        colorIndex = (colorIndex + 1) % COLORS.length;
+            // Increase colorIndex or reset if it's out of bounds
+            colorIndex = (colorIndex + 1) % COLORS.length;
+        }, 100);
     }
 }
 
