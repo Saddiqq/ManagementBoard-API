@@ -24,9 +24,8 @@
 <button onclick="createCard()">Create Card</button>
 
 <h2>Select a Board</h2>
-<select id="boardSelect" onchange="getAllCards(this.value)">
+<select id="boardSelect" onchange="showSelectedBoardInfo(this.value); getAllCards(this.value);">
   <option value="">--Select a board--</option>
-  <!-- Options will be populated from JavaScript -->
 </select>
 
 <h2>Selected Board Info</h2>
@@ -35,7 +34,6 @@
 <h2>All Cards</h2>
 <div id="todo" class="column">
   <h3>To Do</h3>
-  <!-- Removed example card -->
 </div>
 <div id="inProgress" class="column">
   <h3>In Progress</h3>

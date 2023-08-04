@@ -1,36 +1,35 @@
 const BASE_URL = "http://localhost:8080";
 let COLORS = ["first-color", "second-color", "third-color", "fourth-color"];
 let colorIndex = 0;
+let dragElement = null;
 
-function httpGetAsync(theUrl, callback) {
-    let xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
+async function httpGetAsync(theUrl) {
+    let response = await fetch(theUrl);
+    if (response.ok) {
+        let data = await response.json();
+        return data;
+    } else {
+        alert("HTTP-Error: " + response.status);
     }
-    xmlHttp.open("GET", theUrl, true);
-    xmlHttp.send(null);
 }
 
-function getAllBoards() {
-    httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
-        const boards = JSON.parse(responseText);
-        const select = document.getElementById("boardSelect");
-        select.innerHTML = "";
-        boards.forEach(function(board) {
-            const opt = document.createElement('option');
-            opt.value = board.boardId;
-            opt.innerHTML = board.title;
-            select.appendChild(opt);
-        });
+async function getAllBoards() {
+    const boards = await httpGetAsync(`${BASE_URL}/api/boards`);
+    const select = document.getElementById("boardSelect");
+    select.innerHTML = "";
+    boards.forEach(function(board) {
+        const opt = document.createElement('option');
+        opt.value = board.boardId;
+        opt.innerHTML = board.title;
+        select.appendChild(opt);
     });
 }
 
-function createBoard() {
-    var boardTitle = document.getElementById('boardTitle').value;
-    var numberOfColumns = document.getElementById('boardColumns').value;
+async function createBoard() {
+    let boardTitle = document.getElementById('boardTitle').value;
+    let numberOfColumns = document.getElementById('boardColumns').value;
 
-    fetch(`${BASE_URL}/api/boards`, {
+    let response = await fetch(`${BASE_URL}/api/boards`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -39,58 +38,55 @@ function createBoard() {
             title: boardTitle,
             columns: numberOfColumns
         }),
-    })
-    .then(response => response.json())
-    .then(data => {
+    });
+
+    if (response.ok) {
+        let data = await response.json();
         getAllBoards();
-    })
-    .catch((error) => console.error('Error:', error));
+    } else {
+        console.error('Error:', response.status);
+    }
 }
 
-function createCard() {
-    var boardId = document.getElementById('cardBoardId').value;
-    var cardTitle = document.getElementById('cardTitle').value;
-    var section = document.getElementById('cardSection').value;
-    var description = document.getElementById('cardDescription').value;
+async function createCard() {
+    let boardId = document.getElementById('cardBoardId').value;
+    let cardTitle = document.getElementById('cardTitle').value;
+    let section = document.getElementById('cardSection').value;
+    let description = document.getElementById('cardDescription').value;
 
     if (!boardId || !cardTitle || !section || !description) {
         alert("All fields are required to create a card.");
         return;
     }
 
-    // Map the section name to a corresponding number
-    var sectionMapping = {
+    let sectionMapping = {
         "ToDo": 1,
         "InProgress": 2,
         "Done": 3
     };
-    var sectionNumber = sectionMapping[section];
+    let sectionNumber = sectionMapping[section];
 
-    var cardData = {
+    let cardData = {
         title: cardTitle,
         section: sectionNumber,
         description: description
     };
 
-    fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
+    let response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(cardData),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        getAllCards(boardId);
-    })
-    .catch((error) => console.error('Error:', error));
-}
+    });
 
+    if (response.ok) {
+        let data = await response.json();
+        getAllCards(boardId);
+    } else {
+        console.error('Error:', response.status);
+    }
+}
 
 function applyColorPatches() {
     const cardElements = document.querySelectorAll('.ag-courses_item:not(.color-patched)');
@@ -99,23 +95,58 @@ function applyColorPatches() {
         const colorClass = COLORS[colorIndex];
         colorPatch.classList.add(colorClass);
 
-        // Increase colorIndex or reset if it's out of bounds
         colorIndex = (colorIndex + 1) % COLORS.length;
 
-        // Mark card as patched
         cardElement.classList.add('color-patched');
     });
 }
 
+function dragstart_handler(ev) {
+    ev.dataTransfer.setData("text/plain", ev.target.id);
+    dragElement = ev.target;
+}
+
+async function drop_handler(ev, targetSection) {
+    ev.preventDefault();
+
+    dragElement.parentElement.removeChild(dragElement);
+
+    var id = ev.dataTransfer.getData("text/plain");
+    var cardElement = document.getElementById(id);
+    var cardData = JSON.parse(cardElement.getAttribute("data-card"));
+
+    cardData.section = targetSection;
+
+    let response = await fetch(`${BASE_URL}/api/boards/${cardData.boardId}/cards/${cardData.cardId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cardData),
+    });
+
+    if (response.ok) {
+        let data = await response.json();
+        ev.target.appendChild(cardElement);
+        cardElement.setAttribute("data-card", JSON.stringify(cardData));
+    } else {
+        console.error('Error:', response.status);
+    }
+}
+
 async function getAllCards(boardId) {
-    const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
+    let response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    let data = await response.json();
 
     const todoContainer = document.getElementById('todo');
     const inProgressContainer = document.getElementById('inProgress');
@@ -127,6 +158,11 @@ async function getAllCards(boardId) {
 
     for(const card of data) {
         const cardElement = document.createElement('div');
+        cardElement.id = `card-${card.cardId}`;
+        cardElement.setAttribute("data-card", JSON.stringify(card));
+        cardElement.draggable = true;
+        cardElement.addEventListener("dragstart", dragstart_handler);
+
         cardElement.innerHTML = `
             <h4 class="card-title">${card.title}</h4>
             <p class="card-description">${card.description}</p>
@@ -135,28 +171,33 @@ async function getAllCards(boardId) {
         cardElement.className = 'ag-courses_item';
 
         switch (card.section) {
-            case 1: // 'ToDo'
+            case 1:
                 todoContainer.appendChild(cardElement);
                 break;
-            case 2: // 'InProgress'
+            case 2:
                 inProgressContainer.appendChild(cardElement);
                 break;
-            case 3: // 'Done'
+            case 3:
                 doneContainer.appendChild(cardElement);
                 break;
         }
 
-        // Apply color patch after card is appended to the DOM
         applyColorPatches();
     }
+
+    todoContainer.ondragover = function (ev) { ev.preventDefault(); };
+    inProgressContainer.ondragover = function (ev) { ev.preventDefault(); };
+    doneContainer.ondragover = function (ev) { ev.preventDefault(); };
+
+    todoContainer.ondrop = function (ev) { drop_handler(ev, 1); };
+    inProgressContainer.ondrop = function (ev) { drop_handler(ev, 2); };
+    doneContainer.ondrop = function (ev) { drop_handler(ev, 3); };
 }
 
-function showSelectedBoardInfo(boardId) {
-    httpGetAsync(`${BASE_URL}/api/boards/${boardId}`, function(responseText) {
-        const board = JSON.parse(responseText);
-       const boardInfo = document.getElementById("boardInfo");
-       boardInfo.innerHTML = `Board Name: ${board.title},     Board ID: ${board.boardId}`;
-    });
+async function showSelectedBoardInfo(boardId) {
+    let board = await httpGetAsync(`${BASE_URL}/api/boards/${boardId}`);
+    const boardInfo = document.getElementById("boardInfo");
+    boardInfo.innerHTML = `Board Name: ${board.title},     Board ID: ${board.boardId}`;
 }
 
 document.getElementById("boardSelect").addEventListener("change", function() {
@@ -165,10 +206,9 @@ document.getElementById("boardSelect").addEventListener("change", function() {
     getAllCards(boardId);
 });
 
-window.onload = function() {
-    getAllBoards();
+window.onload = async function() {
+    await getAllBoards();
 
-    // Create a MutationObserver instance
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'childList') {
@@ -177,9 +217,7 @@ window.onload = function() {
         });
     });
 
-    // Options for the observer (which mutations to observe)
     const config = { childList: true, subtree: true };
 
-    // Start observing the document with the configured parameters
     observer.observe(document.body, config);
-}
+};
