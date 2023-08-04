@@ -108,14 +108,15 @@ function dragstart_handler(ev) {
     // Extract the cardData from the data-card attribute
     var cardData = JSON.parse(dragElement.getAttribute("data-card"));
 
-    // Store the cardId and boardId in the dragElement for use in the drop_handler function
-    dragElement.setAttribute('data-cardId', cardData.id);
-    dragElement.setAttribute('data-boardId', cardData.board.id);
+    // Store the cardId and boardId in the ev.dataTransfer object for use in the drop_handler function
+    ev.dataTransfer.setData('cardId', cardData.id);
+    ev.dataTransfer.setData('boardId', cardData.board.id);
 
     console.log(cardData.id); // Output cardData.id to console
     console.log(cardData.board.id); // Output cardData.board.id to console
     console.log("Drag Element: ", dragElement);
 }
+
 
 
 async function drop_handler(ev, targetSection) {
@@ -128,9 +129,9 @@ async function drop_handler(ev, targetSection) {
         console.error('No card element found with id:', id);
         return;
     }
-    // Retrieve the cardId and boardId from the dragElement
-    var cardId = cardElement.getAttribute("data-cardId");
-    var boardId = cardElement.getAttribute("data-boardId");
+    // Retrieve the cardId and boardId from the ev.dataTransfer object
+    var cardId = ev.dataTransfer.getData("cardId");
+    var boardId = ev.dataTransfer.getData("boardId");
     var cardDataString = cardElement.getAttribute("data-card");
 
     if (!cardDataString) {
