@@ -106,9 +106,11 @@ async function getAllCards(boardId) {
     for(const card of data) {
         const cardElement = document.createElement('div');
         cardElement.innerHTML = `
-            <h4 class="card-title">${card.title}</h4>
-            <p class="card-description">${card.description}</p>
-            <div class="ag-courses_item_bg"></div>
+            <a class="ag-courses-item_link">
+                <h4 class="card-title">${card.title}</h4>
+                <p class="card-description">${card.description}</p>
+                <div class="ag-courses_item_bg"></div>
+            </a>
         `;
         cardElement.className = 'ag-courses_item';
 
@@ -133,5 +135,6 @@ async function getAllCards(boardId) {
         colorIndex = (colorIndex + 1) % COLORS.length;
     }
 }
+
 
 window.onload = getAllBoards;
