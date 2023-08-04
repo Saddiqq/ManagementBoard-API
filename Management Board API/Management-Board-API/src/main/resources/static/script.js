@@ -141,18 +141,14 @@ async function drop_handler(ev, targetSection) {
 }
 
 async function getAllCards(boardId) {
-    let response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
+    const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     });
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    let data = await response.json();
+    const data = await response.json();
 
     const todoContainer = document.getElementById('todo');
     const inProgressContainer = document.getElementById('inProgress');
@@ -175,6 +171,8 @@ async function getAllCards(boardId) {
             <div class="ag-courses_item_bg"></div>
         `;
         cardElement.className = 'ag-courses_item';
+
+        console.log(card);  // Log card data to the console here
 
         switch (card.section) {
             case 1:
@@ -199,6 +197,7 @@ async function getAllCards(boardId) {
     inProgressContainer.ondrop = function (ev) { drop_handler(ev, 2); };
     doneContainer.ondrop = function (ev) { drop_handler(ev, 3); };
 }
+
 
 async function showSelectedBoardInfo(boardId) {
     let board = await httpGetAsync(`${BASE_URL}/api/boards/${boardId}`);
