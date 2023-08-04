@@ -83,6 +83,54 @@ async function createCard() {
     if (response.ok) {
         let data = await response.json();
         getAllCards(boardId);
+        const updateButton = document.querySelector(`#${cardData.id} .update-button`);
+        updateButton.addEventListener('click', function() {
+            updateCard(cardData.id);
+        });
+
+        const deleteButton = document.querySelector(`#${cardData.id} .delete-button`);
+        deleteButton.addEventListener('click', function() {
+            const confirmed = confirm('Are you sure you want to delete this card?');
+            if (confirmed) {
+                deleteCard(cardData.id);
+            }
+        });
+    } else {
+        console.error('Error:', response.status);
+    }
+}
+
+
+async function updateCard(cardId) {
+    // Get new card data from form or other source
+    let newCardData = {
+        // fill in new card data
+    };
+
+    let response = await fetch(`${BASE_URL}/api/boards/${newCardData.boardId}/cards/${cardId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newCardData),
+    });
+
+    if (response.ok) {
+        let data = await response.json();
+        getAllCards(newCardData.boardId);
+    } else {
+        console.error('Error:', response.status);
+    }
+}
+
+async function deleteCard(cardId) {
+    let response = await fetch(`${BASE_URL}/api/boards/${cardData.boardId}/cards/${cardId}`, {
+        method: 'DELETE',
+    });
+
+    if (response.ok) {
+        let data = await response.json();
+        getAllCards(cardData.boardId);
     } else {
         console.error('Error:', response.status);
     }
@@ -177,9 +225,9 @@ async function getAllCards(boardId) {
     const inProgressContainer = document.getElementById('inProgress');
     const doneContainer = document.getElementById('done');
 
-    todoContainer.innerHTML = '<h3>To Do</h3>';
-    inProgressContainer.innerHTML = '<h3>In Progress</h3>';
-    doneContainer.innerHTML = '<h3>Done</h3>';
+    todoContainer.innerHTML = '<h3>To Do</h3><div class="cards-container"></div>';
+    inProgressContainer.innerHTML = '<h3>In Progress</h3><div class="cards-container"></div>';
+    doneContainer.innerHTML = '<h3>Done</h3><div class="cards-container"></div>';
 
     for(const card of data) {
         const cardElement = document.createElement('div');
@@ -188,26 +236,28 @@ async function getAllCards(boardId) {
         cardElement.draggable = true;
         cardElement.addEventListener("dragstart", dragstart_handler);
 
-        cardElement.innerHTML = `
-            <h4 class="card-title">${card.title}</h4>
-            <p class="card-description">${card.description}</p>
-            <div class="ag-courses_item_bg"></div>
-        `;
+    cardElement.innerHTML = `
+        <h4 class="card-title">${card.title}</h4>
+        <p class="card-description">${card.description}</p>
+        <div class="ag-courses_item_bg"></div>
+        <button class="update-button" onclick="updateCardForm(${card.cardId}, '${card.title}', ${card.section}, '${card.description}')">Update</button>
+        <button class="delete-button" onclick="deleteCard(${card.cardId}, ${card.board.id})">Delete</button>
+    `;
         cardElement.className = 'ag-courses_item';
 
         console.log(card);  // Log card data to the console here
 
-        switch (card.section) {
-            case 1:
-                todoContainer.appendChild(cardElement);
-                break;
-            case 2:
-                inProgressContainer.appendChild(cardElement);
-                break;
-            case 3:
-                doneContainer.appendChild(cardElement);
-                break;
-        }
+  switch (card.section) {
+      case 1:
+          todoContainer.querySelector('.cards-container').appendChild(cardElement);
+          break;
+      case 2:
+          inProgressContainer.querySelector('.cards-container').appendChild(cardElement);
+          break;
+      case 3:
+          doneContainer.querySelector('.cards-container').appendChild(cardElement);
+          break;
+  }
 
         applyColorPatches();
     }
