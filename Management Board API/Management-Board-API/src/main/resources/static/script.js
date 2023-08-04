@@ -102,8 +102,12 @@ function applyColorPatches() {
 }
 
 function dragstart_handler(ev) {
+    // Add the target element's id to the data transfer object
     ev.dataTransfer.setData("text/plain", ev.target.id);
-    dragElement = ev.target;
+    dragElement = ev.target; // Store the dragged element
+    var cardData = JSON.parse(dragElement.getAttribute("data-card"));
+    console.log(cardData.boardId); // Output cardData.boardId to console
+    console.log(cardData.cardId); // Output cardData.cardId to console
 }
 
 async function drop_handler(ev, targetSection) {
