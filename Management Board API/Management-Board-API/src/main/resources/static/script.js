@@ -1,7 +1,6 @@
 const BASE_URL = "http://localhost:8080";
-let COLORS = ["first-color", "second-color", "third-color", "fourth-color", "fifth-color", "sixth-color", "seventh-color", "eighth-color"]; // Add more color classes as needed
+let COLORS = ["first-color", "second-color", "third-color", "fourth-color"];
 let colorIndex = 0;
-let boardsData = [];
 
 function httpGetAsync(theUrl, callback) {
     let xmlHttp = new XMLHttpRequest();
@@ -16,7 +15,6 @@ function httpGetAsync(theUrl, callback) {
 function getAllBoards() {
     httpGetAsync(`${BASE_URL}/api/boards`, function(responseText) {
         const boards = JSON.parse(responseText);
-        boardsData = boards;
         const select = document.getElementById("boardSelect");
         select.innerHTML = "";
         boards.forEach(function(board) {
@@ -52,7 +50,7 @@ function createBoard() {
 function createCard() {
     var boardId = document.getElementById('cardBoardId').value;
     var cardTitle = document.getElementById('cardTitle').value;
-    var section = document.getElementById('cardSection').value;
+   var section = parseInt(document.getElementById('cardSection').value);
     var description = document.getElementById('cardDescription').value;
 
     if (!boardId || !cardTitle || !section || !description) {
@@ -83,6 +81,21 @@ function createCard() {
         getAllCards(boardId);
     })
     .catch((error) => console.error('Error:', error));
+}
+
+function applyColorPatches() {
+    const cardElements = document.querySelectorAll('.ag-courses_item:not(.color-patched)');
+    cardElements.forEach(cardElement => {
+        const colorPatch = cardElement.querySelector('.ag-courses_item_bg');
+        const colorClass = COLORS[colorIndex];
+        colorPatch.classList.add(colorClass);
+
+        // Increase colorIndex or reset if it's out of bounds
+        colorIndex = (colorIndex + 1) % COLORS.length;
+
+        // Mark card as patched
+        cardElement.classList.add('color-patched');
+    });
 }
 
 async function getAllCards(boardId) {
@@ -125,16 +138,39 @@ async function getAllCards(boardId) {
         }
 
         // Apply color patch after card is appended to the DOM
-        setTimeout(() => {
-            const colorPatch = cardElement.querySelector('.ag-courses_item_bg');
-            const colorClass = COLORS[colorIndex];
-            colorPatch.classList.add(colorClass);
-
-            // Increase colorIndex or reset if it's out of bounds
-            colorIndex = (colorIndex + 1) % COLORS.length;
-        }, 100);
+        applyColorPatches();
     }
 }
 
+function showSelectedBoardInfo(boardId) {
+    httpGetAsync(`${BASE_URL}/api/boards/${boardId}`, function(responseText) {
+        const board = JSON.parse(responseText);
+       const boardInfo = document.getElementById("boardInfo");
+       boardInfo.innerHTML = `Selected Board: ${board.title}, BoardID: ${board.boardId}`;
+    });
+}
 
-window.onload = getAllBoards;
+document.getElementById("boardSelect").addEventListener("change", function() {
+    const boardId = this.value;
+    showSelectedBoardInfo(boardId);
+    getAllCards(boardId);
+});
+
+window.onload = function() {
+    getAllBoards();
+
+    // Create a MutationObserver instance
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                applyColorPatches();
+            }
+        });
+    });
+
+    // Options for the observer (which mutations to observe)
+    const config = { childList: true, subtree: true };
+
+    // Start observing the document with the configured parameters
+    observer.observe(document.body, config);
+}
