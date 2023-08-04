@@ -101,10 +101,11 @@ async function createCard() {
 }
 
 
-async function updateCardForm(cardId, title, section, description) {
-     console.log('Card ID:', cardId);
+async function updateCardForm(title, section, description) {
+    // console.log('Card ID:', cardId);
     // Get the board ID from the user
     const boardId = prompt("Enter the board ID:");
+    const cardId = prompt("Enter the desired card ID:");
     if (!boardId) {
         alert("You must provide a board ID.");
         return;
