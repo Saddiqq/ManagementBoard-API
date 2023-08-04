@@ -1,6 +1,6 @@
 const BASE_URL = "http://localhost:8080";
-const COLORS = ["first-color", "second-color", "third-color", "fourth-color"];
-
+let COLORS = ["first-color", "second-color", "third-color", "fourth-color", "fifth-color", "sixth-color", "seventh-color", "eighth-color"]; // Add more color classes as needed
+let colorIndex = 0;
 let boardsData = [];
 
 function httpGetAsync(theUrl, callback) {
@@ -103,7 +103,7 @@ async function getAllCards(boardId) {
     inProgressContainer.innerHTML = '<h3>In Progress</h3>';
     doneContainer.innerHTML = '<h3>Done</h3>';
 
-    data.forEach(card => {
+    for(const card of data) {
         const cardElement = document.createElement('div');
         cardElement.innerHTML = `
             <h4 class="card-title">${card.title}</h4>
@@ -123,19 +123,15 @@ async function getAllCards(boardId) {
                 doneContainer.appendChild(cardElement);
                 break;
         }
-    });
 
-    // After loading all cards, apply color patches
-    const cards = document.querySelectorAll('.ag-courses_item');
-    applyColorPatches(cards);
-}
-
-function applyColorPatches(cards) {
-    cards.forEach((card, index) => {
-        const colorPatch = card.querySelector('.ag-courses_item_bg');
-        const colorClass = COLORS[index % COLORS.length];
+        // Apply color patch after card is appended to the DOM
+        const colorPatch = cardElement.querySelector('.ag-courses_item_bg');
+        const colorClass = COLORS[colorIndex];
         colorPatch.classList.add(colorClass);
-    });
+
+        // Increase colorIndex or reset if it's out of bounds
+        colorIndex = (colorIndex + 1) % COLORS.length;
+    }
 }
 
 window.onload = getAllBoards;
