@@ -112,7 +112,7 @@ function dragstart_handler(ev) {
 
 }
 
-function drop_handler(ev, targetSection) {
+async function drop_handler(ev, targetSection) {
     ev.preventDefault();
 
     var id = ev.dataTransfer.getData("text/plain");
@@ -133,6 +133,24 @@ function drop_handler(ev, targetSection) {
     var cardData = JSON.parse(cardDataString);
 
     console.log("Card Data: ", cardData);
+
+    // update the card's section in the database
+    cardData.section = targetSection;
+
+    let response = await fetch(`${BASE_URL}/api/boards/${cardData.boardId}/cards/${cardData.cardId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cardData),
+    });
+
+    if (response.ok) {
+        let data = await response.json();
+        getAllCards(cardData.boardId);
+    } else {
+        console.error('Error:', response.status);
+    }
 }
 
 
