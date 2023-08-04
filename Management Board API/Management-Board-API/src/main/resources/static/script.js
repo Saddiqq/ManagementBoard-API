@@ -108,37 +108,33 @@ function dragstart_handler(ev) {
     var cardData = JSON.parse(dragElement.getAttribute("data-card"));
     console.log(cardData.boardId); // Output cardData.boardId to console
     console.log(cardData.cardId); // Output cardData.cardId to console
+    console.log("Drag Element: ", dragElement);
+
 }
 
-async function drop_handler(ev, targetSection) {
+function drop_handler(ev, targetSection) {
     ev.preventDefault();
-
-    dragElement.parentElement.removeChild(dragElement);
 
     var id = ev.dataTransfer.getData("text/plain");
     var cardElement = document.getElementById(id);
-    var cardData = JSON.parse(cardElement.getAttribute("data-card"));
-    // Output cardData object to console
-        console.log(cardData);
 
-    cardData.section = targetSection;
-
-    let response = await fetch(`${BASE_URL}/api/boards/${cardData.boardId}/cards/${cardData.cardId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(cardData),
-    });
-
-    if (response.ok) {
-        let data = await response.json();
-        ev.target.appendChild(cardElement);
-        cardElement.setAttribute("data-card", JSON.stringify(cardData));
-    } else {
-        console.error('Error:', response.status);
+    if (!cardElement) {
+        console.error('No card element found with id:', id);
+        return;
     }
+
+    var cardDataString = cardElement.getAttribute("data-card");
+
+    if (!cardDataString) {
+        console.error('No data-card attribute found on element:', cardElement);
+        return;
+    }
+
+    var cardData = JSON.parse(cardDataString);
+
+    console.log("Card Data: ", cardData);
 }
+
 
 async function getAllCards(boardId) {
     const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards`, {
