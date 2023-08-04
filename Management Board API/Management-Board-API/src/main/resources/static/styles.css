@@ -1,5 +1,5 @@
 body {
-    background-color: #e8eaf6;
+    background-color: #000000;
     font-family: Arial, sans-serif;
 }
 
@@ -23,7 +23,7 @@ h2 {
 }
 
 .ag-courses_item {
-    background: #7fa99b;
+    background: #121212;
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 20px;
@@ -31,6 +31,8 @@ h2 {
     color: #ffffff;
     overflow: hidden;
     box-sizing: border-box;
+    width: 400px !important; /
+    height: 160px;
 }
 
 .ag-courses_item_bg {
@@ -57,17 +59,33 @@ h2 {
 }
 
 .first-color {
-    background: #394a51;
+    background: #9e0142;
 }
 
 .second-color {
-    background: #7fa99b;
+    background: #3288bd;
 }
 
 .third-color {
-    background: #fbf2d5;
+    background: #fee08b;
 }
 
 .fourth-color {
-    background: #fdc57b;
+    background: #abdda4;
+}
+
+.sixth-color {
+    background: #fdae61;
+}
+
+.seventh-color {
+    background: #5e4fa2;
+}
+
+.eighth-color {
+    background: #f46d43;
+}
+
+.ninth-color {
+    background: #d53e4f;
 }

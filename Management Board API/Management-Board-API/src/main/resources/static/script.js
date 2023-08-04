@@ -50,7 +50,7 @@ function createBoard() {
 function createCard() {
     var boardId = document.getElementById('cardBoardId').value;
     var cardTitle = document.getElementById('cardTitle').value;
-   var section = parseInt(document.getElementById('cardSection').value);
+    var section = document.getElementById('cardSection').value;
     var description = document.getElementById('cardDescription').value;
 
     if (!boardId || !cardTitle || !section || !description) {
@@ -58,9 +58,17 @@ function createCard() {
         return;
     }
 
+    // Map the section name to a corresponding number
+    var sectionMapping = {
+        "ToDo": 1,
+        "InProgress": 2,
+        "Done": 3
+    };
+    var sectionNumber = sectionMapping[section];
+
     var cardData = {
         title: cardTitle,
-        section: section,
+        section: sectionNumber,
         description: description
     };
 
@@ -82,6 +90,7 @@ function createCard() {
     })
     .catch((error) => console.error('Error:', error));
 }
+
 
 function applyColorPatches() {
     const cardElements = document.querySelectorAll('.ag-courses_item:not(.color-patched)');
@@ -146,7 +155,7 @@ function showSelectedBoardInfo(boardId) {
     httpGetAsync(`${BASE_URL}/api/boards/${boardId}`, function(responseText) {
         const board = JSON.parse(responseText);
        const boardInfo = document.getElementById("boardInfo");
-       boardInfo.innerHTML = `Selected Board: ${board.title}, BoardID: ${board.boardId}`;
+       boardInfo.innerHTML = `Board Name: ${board.title},     Board ID: ${board.boardId}`;
     });
 }
 
