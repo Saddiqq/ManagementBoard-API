@@ -1,5 +1,5 @@
 body {
-    background-color: #000000;
+    background-image: linear-gradient(to right, #2c3e50, #4ca1af);
     font-family: Arial, sans-serif;
 }
 
@@ -8,10 +8,18 @@ h2 {
 }
 
 .column {
-    width: 30%;
+    width: 20%;
     padding: 5px;
-    background-color: #e8eaf6;
-    border-radius: 5px;
+    background-color: #ebecf0;
+    border-radius: 12px;
+    justify: center;
+    box-shadow: var(--ds-shadow-raised,0 1px 1px #091e4240,0 0 1px #091e424f);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    position: relative;
+    white-space: normal;
     margin: 1%;
     float: left;
     min-height: 300px;
@@ -24,15 +32,16 @@ h2 {
 
 .ag-courses_item {
     background: #121212;
-    border-radius: 5px;
+    justify: center;
+    border-radius: 12px;
     margin-bottom: 10px;
     padding: 20px;
     position: relative;
     color: #ffffff;
     overflow: hidden;
     box-sizing: border-box;
-    width: 400px !important; /
-    height: 160px;
+    width: 300px !important; /
+    height: 75px;
 }
 
 .ag-courses_item_bg {
