@@ -114,6 +114,8 @@ async function drop_handler(ev, targetSection) {
     var id = ev.dataTransfer.getData("text/plain");
     var cardElement = document.getElementById(id);
     var cardData = JSON.parse(cardElement.getAttribute("data-card"));
+    // Output cardData object to console
+        console.log(cardData);
 
     cardData.section = targetSection;
 
