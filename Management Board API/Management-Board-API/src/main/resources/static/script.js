@@ -102,6 +102,13 @@ async function createCard() {
 
 
 async function updateCardForm(cardId, title, section, description) {
+    // Get the board ID from the user
+    const boardId = prompt("Enter the board ID:");
+    if (!boardId) {
+        alert("You must provide a board ID.");
+        return;
+    }
+
     // Get the input values from the user for updating the card
     const updatedTitle = prompt("Enter updated card title:", title);
     const updatedSection = prompt("Enter updated section (1: To Do, 2: In Progress, 3: Done):", section);
@@ -132,12 +139,12 @@ async function updateCardForm(cardId, title, section, description) {
         body: JSON.stringify(cardData),
     });
 
-    if (response.ok) {
-        let data = await response.json();
-        getAllCards(cardData.boardId);
-    } else {
-        console.error('Error:', response.status);
-    }
+   if (response.ok) {
+       let data = await response.json();
+       getAllCards(boardId); // replaced cardData.boardId with boardId
+   } else {
+       console.error('Error:', response.status);
+   }
 }
 
 async function deleteCard(cardId, boardId) {
