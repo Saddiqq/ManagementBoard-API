@@ -40,6 +40,7 @@ h2 {
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+    z-index: 1;
 }
 
 .update-button {
@@ -64,7 +65,7 @@ h2 {
     overflow: hidden;
     box-sizing: border-box;
     width: 300px !important;
-    height: auto; /* Set height to 'auto' to allow it to expand */
+    min-height: 75px;  /* Change 'height' to 'min-height' */
 }
 
 .ag-courses_item_bg {
