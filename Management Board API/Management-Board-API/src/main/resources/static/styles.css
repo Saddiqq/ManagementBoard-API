@@ -40,7 +40,8 @@ h2 {
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
-    z-index: 2;
+    z-index: 20; /* increased z-index value */
+    position: relative; /* this line makes z-index applicable */
 }
 
 
@@ -66,7 +67,7 @@ h2 {
     overflow: hidden;
     box-sizing: border-box;
     width: 300px !important;
-    min-height: 75px;  /* Change 'height' to 'min-height' */
+    min-height: 75px;
 }
 
 .ag-courses_item_bg {
@@ -79,6 +80,7 @@ h2 {
     border-bottom-left-radius: 100% 50%;
     background-color: #fdc57b;
     z-index: 0;
+    pointer-events: none; /* Let the pointer events pass through */
 }
 
 .ag-courses_item:hover .ag-courses_item_bg {
