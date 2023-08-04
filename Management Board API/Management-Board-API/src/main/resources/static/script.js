@@ -101,31 +101,35 @@ async function createCard() {
 }
 
 
-async function updateCard(cardId) {
-    // Get new card data from form or other source
-    let newCardData = {
-        // fill in new card data
+async function updateCardForm(cardId, title, section, description) {
+    // Get the input values from the user for updating the card
+    const updatedTitle = prompt("Enter updated card title:", title);
+    const updatedSection = prompt("Enter updated section (1: To Do, 2: In Progress, 3: Done):", section);
+    const updatedDescription = prompt("Enter updated card description:", description);
+
+    // Validate the input values and convert section to a number
+    if (!updatedTitle || isNaN(updatedSection) || !updatedDescription) {
+        alert("Invalid input! Please fill all fields correctly.");
+        return;
+    }
+
+    // Convert section to a number
+    const updatedSectionNumber = parseInt(updatedSection);
+
+    // Prepare the data to update the card
+    const cardData = {
+        title: updatedTitle,
+        section: updatedSectionNumber,
+        description: updatedDescription
     };
 
-    let response = await fetch(`${BASE_URL}/api/boards/${newCardData.boardId}/cards/${cardId}`, {
+    // Send the PUT request to update the card
+    const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards/${cardId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newCardData),
-    });
-
-    if (response.ok) {
-        let data = await response.json();
-        getAllCards(newCardData.boardId);
-    } else {
-        console.error('Error:', response.status);
-    }
-}
-
-async function deleteCard(cardId) {
-    let response = await fetch(`${BASE_URL}/api/boards/${cardData.boardId}/cards/${cardId}`, {
-        method: 'DELETE',
+        body: JSON.stringify(cardData),
     });
 
     if (response.ok) {
@@ -133,6 +137,22 @@ async function deleteCard(cardId) {
         getAllCards(cardData.boardId);
     } else {
         console.error('Error:', response.status);
+    }
+}
+
+async function deleteCard(cardId, boardId) {
+    if (confirm("Are you sure you want to delete this card?")) {
+        // Send the DELETE request to delete the card
+        const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards/${cardId}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            let data = await response.json();
+            getAllCards(boardId);
+        } else {
+            console.error('Error:', response.status);
+        }
     }
 }
 
