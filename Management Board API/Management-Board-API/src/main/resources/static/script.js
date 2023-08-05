@@ -319,12 +319,130 @@ async function showSelectedBoardInfo(boardId) {
     let board = await httpGetAsync(`${BASE_URL}/api/boards/${boardId}`);
     const boardInfo = document.getElementById("boardInfo");
     boardInfo.innerHTML = `Board Name: ${board.title},     Board ID: ${board.boardId}`;
+
+    // Add update and delete buttons
+    const updateButton = document.createElement('button');
+    updateButton.className = "update-button";
+    updateButton.innerText = "Update Board";
+    updateButton.onclick = function() {
+        updateBoardForm(board.title, board.columns);
+    };
+
+    const deleteButton = document.createElement('button');
+    deleteButton.className = "delete-button";
+    deleteButton.innerText = "Delete Board";
+    deleteButton.onclick = function() {
+        const confirmed = confirm('Are you sure you want to delete this board?');
+        if (confirmed) {
+            deleteBoard(board.boardId);
+        }
+    };
+
+    boardInfo.appendChild(updateButton);
+    boardInfo.appendChild(deleteButton);
+}
+async function updateBoardForm(title, columns) {
+    const boardId = prompt("Enter the board ID:");
+    if (!boardId) {
+        alert("You must provide a board ID.");
+        return;
+    }
+
+    const updatedTitle = prompt("Enter updated board title:", title);
+    const updatedColumns = prompt("Enter updated number of columns:", columns);
+
+    if (!updatedTitle || !updatedColumns || isNaN(updatedColumns)) {
+        alert("Invalid input! Please fill all fields correctly.");
+        return;
+    }
+
+    const boardData = {
+        title: updatedTitle,
+        columns: parseInt(updatedColumns)
+    };
+
+    const response = await fetch(`${BASE_URL}/api/boards/${boardId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(boardData),
+    });
+
+    if (response.ok) {
+        let data = await response.json();
+        getAllBoards();
+    } else {
+        console.error('Error:', response.status);
+    }
+}
+
+async function deleteBoard(boardId) {
+    const deleteConfirm = confirm("Are you sure you want to delete this board?");
+    const deleteBoardId = prompt("Please enter the ID of the board you wish to delete for confirmation");
+
+    if (deleteConfirm && deleteBoardId == boardId) {
+        const response = await fetch(`${BASE_URL}/api/boards/${deleteBoardId}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            try {
+                let message = await response.text();
+                console.log(message);
+                getAllBoards();
+            } catch (err) {
+                console.error('Error reading response data:', err);
+            }
+        } else {
+            console.error('Error:', response.status);
+        }
+    } else if (deleteBoardId != boardId) {
+        alert("The board ID you entered does not match the board you selected to delete. Please try again.");
+    }
 }
 
 document.getElementById("boardSelect").addEventListener("change", function() {
     const boardId = this.value;
     showSelectedBoardInfo(boardId);
     getAllCards(boardId);
+
+    // Remove previously added update and delete buttons
+    const boardInfo = document.getElementById("boardInfo");
+    const updateButton = boardInfo.querySelector('.update-button');
+    const deleteButton = boardInfo.querySelector('.delete-button');
+
+    if (updateButton) {
+        updateButton.remove();
+    }
+
+    if (deleteButton) {
+        deleteButton.remove();
+    }
+
+    // Add update and delete buttons for the selected board
+    const selectedBoard = document.querySelector(`option[value="${boardId}"]`);
+    if (selectedBoard) {
+        const updateButton = document.createElement('button');
+        updateButton.className = "update-button";
+        updateButton.innerText = "Update Board";
+        updateButton.onclick = function() {
+            updateBoardForm(selectedBoard.innerHTML, selectedBoard.dataset.columns);
+        };
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = "delete-button";
+        deleteButton.innerText = "Delete Board";
+        deleteButton.onclick = function() {
+            const confirmed = confirm('Are you sure you want to delete this board?');
+            if (confirmed) {
+                deleteBoard(boardId);
+            }
+        };
+
+        boardInfo.appendChild(updateButton);
+        boardInfo.appendChild(deleteButton);
+    }
 });
 
 window.onload = async function() {
