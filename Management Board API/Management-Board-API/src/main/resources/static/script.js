@@ -150,9 +150,12 @@ async function updateCardForm(title, section, description) {
 }
 
 async function deleteCard(cardId, boardId) {
-    if (confirm("Are you sure you want to delete this card?")) {
+    const deleteConfirm = confirm("Are you sure you want to delete this card?");
+    const deleteCardId = prompt("Please enter the ID of the card you wish to delete for confirmation");
+
+    if (deleteConfirm && deleteCardId == cardId) {
         // Send the DELETE request to delete the card
-        const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards/${cardId}`, {
+        const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards/${deleteCardId}`, {
             method: 'DELETE',
         });
 
@@ -162,6 +165,8 @@ async function deleteCard(cardId, boardId) {
         } else {
             console.error('Error:', response.status);
         }
+    } else if (deleteCardId != cardId) {
+        alert("The card ID you entered does not match the card you selected to delete. Please try again.");
     }
 }
 
@@ -266,11 +271,12 @@ async function getAllCards(boardId) {
         cardElement.addEventListener("dragstart", dragstart_handler);
 
     cardElement.innerHTML = `
-        <h4 class="card-title">${card.title}</h4>
+        <h4 class="card-title">Title: ${card.title}</h4>
         <p class="card-description">${card.description}</p>
+        <p class="card-id">ID: ${card.id}</p>
         <div class="ag-courses_item_bg"></div>
-        <button class="update-button" onclick="updateCardForm(${card.cardId}, '${card.title}', ${card.section}, '${card.description}')">Update</button>
-        <button class="delete-button" onclick="deleteCard(${card.cardId}, ${card.board.id})">Delete</button>
+        <button class="update-button" onclick="updateCardForm(${card.id}, '${card.title}', ${card.section}, '${card.description}')">Update</button>
+        <button class="delete-button" onclick="deleteCard(${card.id}, ${card.board.id})">Delete</button>
     `;
         cardElement.className = 'ag-courses_item';
 
