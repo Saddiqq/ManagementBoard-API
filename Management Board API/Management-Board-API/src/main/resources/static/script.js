@@ -152,14 +152,18 @@ async function updateCardForm(title, section, description) {
 async function deleteCard(cardId, boardId) {
     const deleteConfirm = confirm("Are you sure you want to delete this card?");
     const deleteCardId = prompt("Please enter the ID of the card you wish to delete for confirmation");
+    console.log(`Expected Card ID: ${cardId}`);
+    console.log(`Entered Card ID: ${deleteCardId}`);
 
     if (deleteConfirm && deleteCardId == cardId) {
+        console.log(`Sending DELETE request to ${BASE_URL}/api/boards/${boardId}/cards/${deleteCardId}`);
         // Send the DELETE request to delete the card
         const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards/${deleteCardId}`, {
             method: 'DELETE',
         });
 
         if (response.ok) {
+            console.log('Delete request successful. Refreshing cards.');
             let data = await response.json();
             getAllCards(boardId);
         } else {
@@ -169,6 +173,9 @@ async function deleteCard(cardId, boardId) {
         alert("The card ID you entered does not match the card you selected to delete. Please try again.");
     }
 }
+
+
+
 
 function applyColorPatches() {
     const cardElements = document.querySelectorAll('.ag-courses_item:not(.color-patched)');
@@ -271,13 +278,14 @@ async function getAllCards(boardId) {
         cardElement.addEventListener("dragstart", dragstart_handler);
 
     cardElement.innerHTML = `
-        <h4 class="card-title">Title: ${card.title}</h4>
+        <h4 class="card-title">${card.title}</h4>
         <p class="card-description">${card.description}</p>
         <p class="card-id">ID: ${card.id}</p>
         <div class="ag-courses_item_bg"></div>
-        <button class="update-button" onclick="updateCardForm(${card.id}, '${card.title}', ${card.section}, '${card.description}')">Update</button>
+        <button class="update-button" onclick="updateCardForm('${card.title}', ${card.section}, '${card.description}')">Update</button>
         <button class="delete-button" onclick="deleteCard(${card.id}, ${card.board.id})">Delete</button>
     `;
+
         cardElement.className = 'ag-courses_item';
 
         console.log(card);  // Log card data to the console here
