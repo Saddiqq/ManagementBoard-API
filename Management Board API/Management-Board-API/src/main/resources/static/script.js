@@ -152,20 +152,21 @@ async function updateCardForm(title, section, description) {
 async function deleteCard(cardId, boardId) {
     const deleteConfirm = confirm("Are you sure you want to delete this card?");
     const deleteCardId = prompt("Please enter the ID of the card you wish to delete for confirmation");
-    console.log(`Expected Card ID: ${cardId}`);
-    console.log(`Entered Card ID: ${deleteCardId}`);
 
     if (deleteConfirm && deleteCardId == cardId) {
-        console.log(`Sending DELETE request to ${BASE_URL}/api/boards/${boardId}/cards/${deleteCardId}`);
         // Send the DELETE request to delete the card
         const response = await fetch(`${BASE_URL}/api/boards/${boardId}/cards/${deleteCardId}`, {
             method: 'DELETE',
         });
 
         if (response.ok) {
-            console.log('Delete request successful. Refreshing cards.');
-            let data = await response.json();
-            getAllCards(boardId);
+            try {
+                let message = await response.text();
+                console.log(message);
+                getAllCards(boardId);
+            } catch (err) {
+                console.error('Error reading response data:', err);
+            }
         } else {
             console.error('Error:', response.status);
         }
@@ -173,7 +174,6 @@ async function deleteCard(cardId, boardId) {
         alert("The card ID you entered does not match the card you selected to delete. Please try again.");
     }
 }
-
 
 
 
