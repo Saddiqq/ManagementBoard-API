@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:8080";
+const host = window.location.host;
+const BASE_URL = "http://" + host + ":8080";
 let COLORS = ["first-color", "second-color", "third-color", "fourth-color"];
 let colorIndex = 0;
 let dragElement = null;
