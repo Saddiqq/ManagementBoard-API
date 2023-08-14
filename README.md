@@ -20,6 +20,10 @@ Installation and Usage
 2- Run the clone using intellij
 3- Go to ManagmentBoardApiApplication and runt the program 
 4- Open the browser and visit http://localhost:8080/ 
+5- Create at least 3 boards. (board coloumns are currently set to 3 coloumns until future update) 
+6- Once the boards are created, select the desired board from the dropdown mennu. the first board will be unclickable until another board is selcted first. 
+7- Once the board is created. add a card to the desired board by specifying the board id (get it from board info, if one board only created id=1)
+8- lastly you can click on updadate card and inpu  another column number, to move the card.
 
 bash
 Copy code
