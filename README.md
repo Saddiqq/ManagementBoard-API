@@ -25,30 +25,22 @@ Installation and Usage
 7- Once the board is created. add a card to the desired board by specifying the board id (get it from board info, if one board only created id=1)
 8- lastly you can click on updadate card and inpu  another column number, to move the card.
 
-bash
-Copy code
+#run the program :
 git clone https://github.com/Saddiqq/ManagementBoard-API.git
-Navigate to the project directory
+After you've cloned the project repository, follow these steps to get it up and running.
+Compose Up : Open a terminal window and navigate to the project directory.
+Run the following command to set up the necessary components: docker-compose up
+Accessing the Application: Once the containers are up and running, you can access the application through your web browser.
 
-bash
-Copy code
-cd trello-like-board
-Open index.html in a web browser
 
-You can simply double-click the index.html file or use a simple server like live-server if you have it installed.
-
-bash
-Copy code
-live-server
-Usage
-
+#Usage:
 Create a New Board: Click on the "New Board" button and give it a name.
 Add a Card: Click on the "Add Card" button within a list and add your card title.
 Edit a Card: Click on a card and then click on the "Edit" button. Make your changes and click "Save".
 Delete a Card: Click on a card and then click on the "Delete" button to remove the card.
 
-Feedback
+#Feedback:
 If you have any feedback or issues, please comment an issue in this repository.
 
-License
+#License:
 This project is copy right. 
